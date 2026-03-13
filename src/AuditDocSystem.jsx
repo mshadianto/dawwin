@@ -849,13 +849,25 @@ export default function AuditDocApp() {
       </div>
 
       {/* Main Content */}
-      <div style={{ flex: 1, padding: "24px 28px", maxWidth: 900, overflowY: "auto" }}>
-        {data.activeTab === "dashboard" && <Dashboard data={data} />}
-        {data.activeTab === "info" && <AuditInfoTab data={data} setData={setData} />}
-        {data.activeTab === "coso" && <COSOTab data={data} setData={setData} />}
-        {data.activeTab === "findings" && <FindingsTab data={data} setData={setData} />}
-        {data.activeTab === "observations" && <ObservationsTab data={data} setData={setData} />}
-        {data.activeTab === "actionplan" && <ActionPlanTab data={data} setData={setData} />}
+      <div style={{ flex: 1, overflowY: "auto", position: "relative" }}>
+        {/* Branding — top right */}
+        <div style={{ position: "sticky", top: 0, zIndex: 10, display: "flex", justifyContent: "flex-end", padding: "16px 28px 0" }}>
+          <div style={{ textAlign: "right", lineHeight: 1.3 }}>
+            <div style={{ fontFamily: "'Amiri', 'Noto Naskh Arabic', serif", fontSize: 28, fontWeight: 700, color: "#1B365D", letterSpacing: 1 }}>دوِّن</div>
+            <div style={{ fontSize: 14, fontWeight: 900, color: "#1B365D", letterSpacing: 2, marginTop: -2 }}>DAWWIN</div>
+            <div style={{ fontSize: 10, color: "#64748B", fontWeight: 500, marginTop: 2 }}>AI-Powered Audit Documentation</div>
+            <div style={{ fontSize: 9, color: "#94A3B8", fontWeight: 600, letterSpacing: 0.5 }}>COSO 2013 × IIA Standards</div>
+            <div style={{ fontSize: 9, color: "#94A3B8", marginTop: 2 }}>by <span style={{ fontWeight: 700, color: "#1B365D" }}>MSHadianto</span></div>
+          </div>
+        </div>
+        <div style={{ padding: "12px 28px 24px", maxWidth: 900 }}>
+          {data.activeTab === "dashboard" && <Dashboard data={data} />}
+          {data.activeTab === "info" && <AuditInfoTab data={data} setData={setData} />}
+          {data.activeTab === "coso" && <COSOTab data={data} setData={setData} />}
+          {data.activeTab === "findings" && <FindingsTab data={data} setData={setData} />}
+          {data.activeTab === "observations" && <ObservationsTab data={data} setData={setData} />}
+          {data.activeTab === "actionplan" && <ActionPlanTab data={data} setData={setData} />}
+        </div>
       </div>
     </div>
   );
