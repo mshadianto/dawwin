@@ -7,6 +7,10 @@ export const TABS = [
   { id: "findings", icon: "\u{1F50D}", label: "Temuan" },
   { id: "observations", icon: "\u{1F4DD}", label: "Observasi" },
   { id: "actionplan", icon: "\u{1F3AF}", label: "Tindak Lanjut" },
+  { id: "divider-lha", divider: true, label: "LHA Analytics" },
+  { id: "analytics", icon: "\u{1F4C8}", label: "Analytics" },
+  { id: "risk", icon: "\u{1F6E1}\uFE0F", label: "Risk Mgmt" },
+  { id: "fraud", icon: "\u{1F575}\uFE0F", label: "Fraud Detection" },
 ];
 
 export const RATINGS = {

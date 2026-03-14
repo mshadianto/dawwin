@@ -7,6 +7,9 @@ import COSOTab from "./tabs/COSOTab";
 import FindingsTab from "./tabs/FindingsTab";
 import ObservationsTab from "./tabs/ObservationsTab";
 import ActionPlanTab from "./tabs/ActionPlanTab";
+import AnalyticsTab from "./tabs/AnalyticsTab";
+import RiskTab from "./tabs/RiskTab";
+import FraudTab from "./tabs/FraudTab";
 
 const TAB_COMPONENTS = {
   dashboard: Dashboard,
@@ -15,6 +18,9 @@ const TAB_COMPONENTS = {
   findings: FindingsTab,
   observations: ObservationsTab,
   actionplan: ActionPlanTab,
+  analytics: AnalyticsTab,
+  risk: RiskTab,
+  fraud: FraudTab,
 };
 
 export default function AuditDocApp() {
@@ -37,6 +43,7 @@ export default function AuditDocApp() {
   };
 
   const ActiveTab = TAB_COMPONENTS[data.activeTab] || Dashboard;
+  const isLHATab = ["analytics", "risk", "fraud"].includes(data.activeTab);
 
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif", background: "#F3F4F6", minHeight: "100vh", display: "flex" }}>
@@ -46,12 +53,21 @@ export default function AuditDocApp() {
           <div style={{ fontSize: 15, fontWeight: 900, letterSpacing: -0.5 }}>{"🏛️"} AUDIT DOC</div>
           <div style={{ fontSize: 10, color: "rgba(255,255,255,0.5)", marginTop: 2, letterSpacing: 0.5 }}>COSO 2013 {"×"} IIA Standards</div>
         </div>
-        <div style={{ flex: 1, padding: "12px 8px" }}>
-          {TABS.map(t => (
-            <button key={t.id} onClick={() => setData(d => ({ ...d, activeTab: t.id }))} style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", padding: "10px 12px", borderRadius: 8, border: "none", cursor: "pointer", fontSize: 13, fontWeight: data.activeTab === t.id ? 700 : 500, background: data.activeTab === t.id ? "rgba(255,255,255,0.15)" : "transparent", color: data.activeTab === t.id ? "#fff" : "rgba(255,255,255,0.6)", marginBottom: 2, fontFamily: "'DM Sans', sans-serif", textAlign: "left", transition: "all 0.15s" }}>
-              <span style={{ fontSize: 16 }}>{t.icon}</span> {t.label}
-            </button>
-          ))}
+        <div style={{ flex: 1, padding: "12px 8px", overflowY: "auto" }}>
+          {TABS.map(t => {
+            if (t.divider) {
+              return (
+                <div key={t.id} style={{ padding: "14px 12px 6px", fontSize: 9, fontWeight: 800, color: "rgba(255,255,255,0.3)", letterSpacing: 1.5, textTransform: "uppercase" }}>
+                  {t.label}
+                </div>
+              );
+            }
+            return (
+              <button key={t.id} onClick={() => setData(d => ({ ...d, activeTab: t.id }))} style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", padding: "10px 12px", borderRadius: 8, border: "none", cursor: "pointer", fontSize: 13, fontWeight: data.activeTab === t.id ? 700 : 500, background: data.activeTab === t.id ? "rgba(255,255,255,0.15)" : "transparent", color: data.activeTab === t.id ? "#fff" : "rgba(255,255,255,0.6)", marginBottom: 2, fontFamily: "'DM Sans', sans-serif", textAlign: "left", transition: "all 0.15s" }}>
+                <span style={{ fontSize: 16 }}>{t.icon}</span> {t.label}
+              </button>
+            );
+          })}
         </div>
         <div style={{ padding: "12px 16px", borderTop: "1px solid rgba(255,255,255,0.1)", display: "flex", flexDirection: "column", gap: 6 }}>
           <button onClick={exportJSON} style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 6, padding: "6px 10px", color: "#fff", fontSize: 11, cursor: "pointer", fontWeight: 600 }}>{"📥"} Export JSON</button>
@@ -74,8 +90,8 @@ export default function AuditDocApp() {
             <div style={{ fontSize: 9, color: "#94A3B8", marginTop: 2 }}>by <span style={{ fontWeight: 700, color: "#1B365D" }}>MSHadianto</span></div>
           </div>
         </div>
-        <div style={{ padding: "12px 28px 24px", maxWidth: 900 }}>
-          <ActiveTab data={data} setData={setData} />
+        <div style={{ padding: "12px 28px 24px", maxWidth: isLHATab ? 1100 : 900 }}>
+          {isLHATab ? <ActiveTab /> : <ActiveTab data={data} setData={setData} />}
         </div>
       </div>
     </div>
