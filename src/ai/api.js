@@ -1,20 +1,17 @@
-export async function callAnthropicAPI(prompt) {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL || "/api/anthropic";
-  const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY || "";
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://wgbtsdrgjlmakjoxvvbv.supabase.co";
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndnYnRzZHJnamxtYWtqb3h2dmJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NjI1MTUsImV4cCI6MjA4OTAzODUxNX0.5sAVIDHPN8HeRRzXfhCa7V5nQ7uIL1ZmnwwwwobY8PI";
 
-  const headers = { "Content-Type": "application/json" };
-  if (apiKey) {
-    headers["x-api-key"] = apiKey;
-    headers["anthropic-version"] = "2023-06-01";
-  }
-
-  const response = await fetch(`${baseUrl}/v1/messages`, {
+export async function callAI(prompt) {
+  const response = await fetch(`${SUPABASE_URL}/functions/v1/ai-proxy`, {
     method: "POST",
-    headers,
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+    },
     body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
+      prompt,
+      model: "llama-3.3-70b-versatile",
       max_tokens: 1000,
-      messages: [{ role: "user", content: prompt }],
     }),
   });
 
@@ -24,8 +21,6 @@ export async function callAnthropicAPI(prompt) {
   }
 
   const data = await response.json();
-  return (data.content || [])
-    .map(b => (b.type === "text" ? b.text : ""))
-    .join("")
-    .trim();
+  if (data.error) throw new Error(data.error);
+  return (data.text || "").trim();
 }

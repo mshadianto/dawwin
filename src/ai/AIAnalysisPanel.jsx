@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { TextArea, FieldGroup } from "../components/ui";
 import { buildPrompt } from "./prompts";
-import { callAnthropicAPI } from "./api";
+import { callAI } from "./api";
 
 function AIButton({ label, icon, target, disabled, aiLoading, aiTarget, onClick }) {
   return (
@@ -60,7 +60,7 @@ export default function AIAnalysisPanel({ editing, updateFinding }) {
     setAiPreview(null);
 
     try {
-      const text = await callAnthropicAPI(buildPrompt(target, editing));
+      const text = await callAI(buildPrompt(target, editing));
 
       if (target === "all") {
         let parsed;
@@ -110,7 +110,7 @@ export default function AIAnalysisPanel({ editing, updateFinding }) {
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
           <span style={{ fontSize: 18 }}>🤖</span>
           <span style={{ color: "#E9D5FF", fontSize: 14, fontWeight: 800, fontFamily: "'DM Sans', sans-serif" }}>AI-Powered Audit Analysis</span>
-          <span style={{ color: "#A78BFA", fontSize: 11, fontWeight: 500 }}>— Claude Sonnet</span>
+          <span style={{ color: "#A78BFA", fontSize: 11, fontWeight: 500 }}>— Groq LLaMA 3.3</span>
         </div>
         <div style={{ fontSize: 12, color: "#C4B5FD", marginBottom: 12, lineHeight: 1.5 }}>
           Isi <strong style={{ color: "#E9D5FF" }}>Kondisi</strong> dan <strong style={{ color: "#E9D5FF" }}>Kriteria</strong> terlebih dahulu, lalu klik tombol di bawah untuk generate analisis berbasis COSO & IIA Standards.
