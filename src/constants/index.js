@@ -17,6 +17,8 @@ export const TABS = [
   { id: "drift", icon: "\u{1F4E1}", label: "Drift Monitor" },
   { id: "divider-ml", divider: true, label: "ML Platform" },
   { id: "mlpipeline", icon: "\u26A1", label: "ML Pipeline" },
+  { id: "autofe", icon: "\u{1F527}", label: "Auto-FE" },
+  { id: "copilot", icon: "\u{1F4AC}", label: "Data Copilot" },
 ];
 
 export const RATINGS = {
