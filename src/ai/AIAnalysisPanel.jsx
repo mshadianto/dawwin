@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { TextArea, FieldGroup } from "../components/ui";
 import { buildPrompt } from "./prompts";
-import { callAI } from "./api";
+import { callAI as fetchAI } from "./api";
 
 function AIButton({ label, icon, target, disabled, aiLoading, aiTarget, onClick }) {
   return (
@@ -60,7 +60,7 @@ export default function AIAnalysisPanel({ editing, updateFinding }) {
     setAiPreview(null);
 
     try {
-      const text = await callAI(buildPrompt(target, editing));
+      const text = await fetchAI(buildPrompt(target, editing));
 
       if (target === "all") {
         let parsed;
