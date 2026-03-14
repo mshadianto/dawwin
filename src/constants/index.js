@@ -15,6 +15,8 @@ export const TABS = [
   { id: "roi", icon: "\u{1F4B0}", label: "ROI & Value" },
   { id: "xai", icon: "\u{1F9E0}", label: "Explainability" },
   { id: "drift", icon: "\u{1F4E1}", label: "Drift Monitor" },
+  { id: "divider-ml", divider: true, label: "ML Platform" },
+  { id: "mlpipeline", icon: "\u26A1", label: "ML Pipeline" },
 ];
 
 export const RATINGS = {

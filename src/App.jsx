@@ -14,6 +14,7 @@ import ISO31000Tab from "./tabs/ISO31000Tab";
 import ROITab from "./tabs/ROITab";
 import XAITab from "./tabs/XAITab";
 import DriftTab from "./tabs/DriftTab";
+import MLPipelineTab from "./ml/components/MLPipelineTab";
 
 const TAB_COMPONENTS = {
   dashboard: Dashboard,
@@ -29,6 +30,7 @@ const TAB_COMPONENTS = {
   roi: ROITab,
   xai: XAITab,
   drift: DriftTab,
+  mlpipeline: MLPipelineTab,
 };
 
 export default function AuditDocApp() {
@@ -51,7 +53,7 @@ export default function AuditDocApp() {
   };
 
   const ActiveTab = TAB_COMPONENTS[data.activeTab] || Dashboard;
-  const isLHATab = ["analytics", "risk", "fraud", "iso31000", "roi", "xai", "drift"].includes(data.activeTab);
+  const isLHATab = ["analytics", "risk", "fraud", "iso31000", "roi", "xai", "drift", "mlpipeline"].includes(data.activeTab);
 
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif", background: "#F8F9FB", minHeight: "100vh", display: "flex" }}>
