@@ -11,6 +11,7 @@ export const TABS = [
   { id: "analytics", icon: "\u{1F4C8}", label: "Analytics" },
   { id: "risk", icon: "\u{1F6E1}\uFE0F", label: "Risk Mgmt" },
   { id: "fraud", icon: "\u{1F575}\uFE0F", label: "Fraud Detection" },
+  { id: "iso31000", icon: "\u{1F4CB}", label: "ISO 31000" },
 ];
 
 export const RATINGS = {

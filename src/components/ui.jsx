@@ -263,3 +263,52 @@ export function ThreeDotsMenu() {
     </div>
   );
 }
+
+export function ScatterPlot({ points, width = 400, height = 240, xLabel = "X", yLabel = "Y" }) {
+  const pad = { top: 20, right: 30, bottom: 36, left: 44 };
+  const w = width - pad.left - pad.right;
+  const h = height - pad.top - pad.bottom;
+  const maxX = Math.max(...points.map(p => p.x), 1);
+  const maxY = Math.max(...points.map(p => p.y), 1);
+  const maxR = Math.max(...points.map(p => p.r || 1), 1);
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
+      {/* Grid */}
+      {[0, 0.25, 0.5, 0.75, 1].map(t => (
+        <line key={`h${t}`} x1={pad.left} y1={pad.top + h * (1 - t)} x2={pad.left + w} y2={pad.top + h * (1 - t)} stroke="#F1F5F9" strokeWidth={0.5} />
+      ))}
+      {[0, 0.25, 0.5, 0.75, 1].map(t => (
+        <line key={`v${t}`} x1={pad.left + w * t} y1={pad.top} x2={pad.left + w * t} y2={pad.top + h} stroke="#F1F5F9" strokeWidth={0.5} />
+      ))}
+      {/* Axes */}
+      <line x1={pad.left} y1={pad.top + h} x2={pad.left + w} y2={pad.top + h} stroke="#94A3B8" strokeWidth={1} />
+      <line x1={pad.left} y1={pad.top} x2={pad.left} y2={pad.top + h} stroke="#94A3B8" strokeWidth={1} />
+      <text x={pad.left + w / 2} y={height - 4} textAnchor="middle" style={{ fontSize: 9, fill: "#94A3B8", fontFamily: "'JetBrains Mono', monospace" }}>{xLabel}</text>
+      <text x={10} y={pad.top + h / 2} textAnchor="middle" transform={`rotate(-90,10,${pad.top + h / 2})`} style={{ fontSize: 9, fill: "#94A3B8", fontFamily: "'JetBrains Mono', monospace" }}>{yLabel}</text>
+      {/* Points */}
+      {points.map((p, i) => {
+        const cx = pad.left + (p.x / maxX) * w;
+        const cy = pad.top + h - (p.y / maxY) * h;
+        const r = 6 + ((p.r || 1) / maxR) * 14;
+        return (
+          <g key={i}>
+            <circle cx={cx} cy={cy} r={r} fill={p.color || "#3B82F6"} opacity={0.25} />
+            <circle cx={cx} cy={cy} r={4} fill={p.color || "#3B82F6"} stroke="#fff" strokeWidth={1.5} />
+            {p.label && <text x={cx} y={cy - r - 4} textAnchor="middle" style={{ fontSize: 8, fill: "#64748B", fontWeight: 600, fontFamily: "'DM Sans', sans-serif" }}>{p.label}</text>}
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+export function RiskLevelBadge({ level }) {
+  const config = {
+    extreme: { label: "EXTREME", bg: "#7F1D1D", color: "#fff" },
+    high: { label: "HIGH", bg: "#DC2626", color: "#fff" },
+    medium: { label: "MEDIUM", bg: "#F59E0B", color: "#fff" },
+    low: { label: "LOW", bg: "#059669", color: "#fff" },
+  };
+  const c = config[level] || config.low;
+  return <Badge bg={c.bg} color={c.color}>{c.label}</Badge>;
+}
