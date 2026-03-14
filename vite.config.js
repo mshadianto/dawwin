@@ -4,4 +4,13 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   base: "/dawwin/",
+  server: {
+    proxy: {
+      "/api/anthropic": {
+        target: "https://api.anthropic.com",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/anthropic/, ""),
+      },
+    },
+  },
 });
