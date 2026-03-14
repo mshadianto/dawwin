@@ -12,6 +12,7 @@ import RiskTab from "./tabs/RiskTab";
 import FraudTab from "./tabs/FraudTab";
 import ISO31000Tab from "./tabs/ISO31000Tab";
 import ROITab from "./tabs/ROITab";
+import XAITab from "./tabs/XAITab";
 
 const TAB_COMPONENTS = {
   dashboard: Dashboard,
@@ -25,6 +26,7 @@ const TAB_COMPONENTS = {
   fraud: FraudTab,
   iso31000: ISO31000Tab,
   roi: ROITab,
+  xai: XAITab,
 };
 
 export default function AuditDocApp() {
@@ -47,7 +49,7 @@ export default function AuditDocApp() {
   };
 
   const ActiveTab = TAB_COMPONENTS[data.activeTab] || Dashboard;
-  const isLHATab = ["analytics", "risk", "fraud", "iso31000", "roi"].includes(data.activeTab);
+  const isLHATab = ["analytics", "risk", "fraud", "iso31000", "roi", "xai"].includes(data.activeTab);
 
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif", background: "#F8F9FB", minHeight: "100vh", display: "flex" }}>

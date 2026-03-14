@@ -13,6 +13,7 @@ export const TABS = [
   { id: "fraud", icon: "\u{1F575}\uFE0F", label: "Fraud Detection" },
   { id: "iso31000", icon: "\u{1F4CB}", label: "ISO 31000" },
   { id: "roi", icon: "\u{1F4B0}", label: "ROI & Value" },
+  { id: "xai", icon: "\u{1F9E0}", label: "Explainability" },
 ];
 
 export const RATINGS = {
