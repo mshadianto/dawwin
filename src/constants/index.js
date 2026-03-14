@@ -14,6 +14,7 @@ export const TABS = [
   { id: "iso31000", icon: "\u{1F4CB}", label: "ISO 31000" },
   { id: "roi", icon: "\u{1F4B0}", label: "ROI & Value" },
   { id: "xai", icon: "\u{1F9E0}", label: "Explainability" },
+  { id: "drift", icon: "\u{1F4E1}", label: "Drift Monitor" },
 ];
 
 export const RATINGS = {
