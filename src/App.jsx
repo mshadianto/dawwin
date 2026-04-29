@@ -10,6 +10,7 @@ import ActionPlanTab from "./tabs/ActionPlanTab";
 import TimelineTab from "./tabs/TimelineTab";
 import ReportTab from "./tabs/ReportTab";
 import AISettingsTab from "./tabs/AISettingsTab";
+import CrossLhaWrapper from "./tabs/CrossLhaWrapper";
 import AnalyticsTab from "./tabs/AnalyticsTab";
 import RiskTab from "./tabs/RiskTab";
 import FraudTab from "./tabs/FraudTab";
@@ -31,6 +32,7 @@ const TAB_COMPONENTS = {
   timeline: TimelineTab,
   report: ReportTab,
   aisettings: AISettingsTab,
+  crosslha: CrossLhaWrapper,
   analytics: AnalyticsTab,
   risk: RiskTab,
   fraud: FraudTab,
@@ -63,7 +65,7 @@ export default function AuditDocApp() {
   };
 
   const ActiveTab = TAB_COMPONENTS[data.activeTab] || Dashboard;
-  const isLHATab = ["analytics", "risk", "fraud", "iso31000", "roi", "xai", "drift", "mlpipeline", "autofe", "copilot"].includes(data.activeTab);
+  const isLHATab = ["crosslha", "analytics", "risk", "fraud", "iso31000", "roi", "xai", "drift", "mlpipeline", "autofe", "copilot"].includes(data.activeTab);
 
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif", background: "#F8F9FB", minHeight: "100vh", display: "flex" }}>
