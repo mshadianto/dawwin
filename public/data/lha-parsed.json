@@ -12,214 +12,476 @@
       "scope": "Strategic Planning, Program Management, Event Management, SOTK & Job Description",
       "team": [
         { "role": "Penanggung Jawab", "name": "Drs. Ahmad Fauzan, M.Ak., CIA, CRMA" },
-        { "role": "Pengendali Teknis", "name": "Ratna Dewi Sari, SE., M.M., CIA" },
-        { "role": "Ketua Tim", "name": "Budi Santoso, S.Kom., M.M., QIA, CISA" },
-        { "role": "Anggota Tim", "name": "Siti Nurhaliza, SE., CFE" },
-        { "role": "Anggota Tim", "name": "Dian Permata Sari, S.Ak., CCSA" }
+        { "role": "Ketua Tim", "name": "Budi Santoso, S.Kom., M.M., QIA, CISA" }
       ],
       "cosoAssessment": {
-        "control_environment": {
-          "rating": "perlu_perbaikan",
-          "notes": "SOTK belum mengakomodasi tugas pengelolaan data peserta. Job description belum di-update sejak 2022 padahal ada perubahan portfolio program."
-        },
-        "risk_assessment": {
-          "rating": "perlu_perbaikan",
-          "notes": "Linkage antara Renstra-RKAT-IKU belum systematic. Strategic risks dari program baru (tabungan, cicilan setoran lunas) belum di-RCSA."
-        },
-        "control_activities": {
-          "rating": "perlu_perbaikan",
-          "notes": "SOP fokus pada proses administrasi, belum cover tata laksana program. Maker-checker untuk dana non-RKAT belum formal."
-        },
-        "info_communication": {
-          "rating": "perlu_perbaikan",
-          "notes": "Pelaporan accountability dana sponsorship Rp1,25M tidak tercatat. Komunikasi linkage strategi → operasional masih ad-hoc."
-        },
-        "monitoring": {
-          "rating": "perlu_perbaikan",
-          "notes": "Renstra Annual Review tidak dilakukan formal. KPI tracking IKU BSC untuk program baru belum established."
-        }
+        "control_environment": { "rating": "perlu_perbaikan", "notes": "SOTK belum mengakomodasi tugas pengelolaan data peserta." },
+        "risk_assessment": { "rating": "perlu_perbaikan", "notes": "Linkage Renstra-RKAT-IKU belum systematic." },
+        "control_activities": { "rating": "perlu_perbaikan", "notes": "SOP fokus administrasi, belum cover tata laksana." },
+        "info_communication": { "rating": "perlu_perbaikan", "notes": "Pelaporan accountability sponsorship Rp1,25M tidak tercatat." },
+        "monitoring": { "rating": "perlu_perbaikan", "notes": "Renstra Annual Review tidak dilakukan formal." }
       },
       "findings": [
         {
           "id": "F001-1",
           "title": "Ketidakselarasan Renstra 2022-2027 dengan Program & RKAT — Program Tabungan dan Cicilan Setoran Lunas Belum Tercantum di RKAT",
-          "rating": "high",
-          "status": "open",
-          "domain": "governance",
-          "fcaArea": "governance",
-          "lod": "first_line",
+          "rating": "high", "status": "open", "domain": "governance", "fcaArea": "governance", "lod": "first_line",
           "cosoComponents": ["risk_assessment", "info_communication"],
           "riskCategories": ["strategis", "operasional", "kepatuhan"],
           "createdDate": "2024-12-10",
-          "condition": "Reviu atas Renstra 2022-2027 dan dokumen RKAT 2024 menemukan:\n1) Program 'Tabungan' dan 'Cicilan Setoran Lunas' yang merupakan inisiatif strategis dalam Renstra Pasal 12 ayat (3) tidak tercantum dalam RKAT 2024\n2) IKU BSC untuk kedua program tersebut belum di-set, sehingga pencapaian tidak ter-track\n3) Anggaran operasional kedua program di-alokasikan informal melalui reklasifikasi pos lain (tidak transparent)\n4) Tidak ada Renstra-RKAT-IKU Traceability Matrix yang formal\n5) Sample 18 IKU yang ada: 8 (44%) tidak terkait langsung dengan strategic objective di Renstra",
-          "criteria": "Renstra 2022-2027 Pasal 12 ayat (3) tentang Program Strategic; PP No.8/2006 tentang Pelaporan Keuangan & Kinerja Instansi; KNKG GCG Guidelines Pasal 3.2 (Akuntabilitas); COSO 2013 Principle 7 (Identifies and Analyzes Risks); IIA Standard 2120 (Risk Management); Balanced Scorecard methodology (Kaplan & Norton)",
-          "cause": "1) Process flow Renstra → RKAT → IKU belum memiliki systematic linkage matrix dengan ownership per tier\n2) Tim Perencanaan understaffed (rasio 1:8 program, ideal 1:4)\n3) RKAT preparation cycle belum mengintegrasikan strategic review formal\n4) Tidak ada PMO/Strategy Office yang dedicated untuk Renstra execution monitoring\n5) Cultural disconnect antara fungsi planning dan operational",
-          "effect": "1) Disconnect strategi-eksekusi → potential underperformance Renstra objectives 30-40%\n2) Risiko anggaran inefisien — alokasi informal Rp2-5 miliar tidak transparent\n3) Pelanggaran prinsip akuntabilitas GCG — potensi temuan BPK/auditor eksternal\n4) Stakeholder confidence menurun karena strategic execution gap\n5) Kompetitif disadvantage — kompetitor sudah implement program serupa lebih dulu",
-          "recommendation": "1) Develop Renstra-RKAT-IKU Traceability Matrix dengan PIC per program (target Q1 2025)\n2) Mandatory inclusion semua program strategis Renstra dalam RKAT — no exception\n3) Establish IKU BSC untuk Program Tabungan dan Cicilan Setoran Lunas dalam 60 hari\n4) Bentuk Strategy Management Office (SMO) atau PMO Function — minimal 2 staf dedicated\n5) Implementasi Quarterly Strategic Review dengan BoD untuk monitor execution\n6) Update Renstra preparation cycle untuk include strategic-operational integration check",
-          "managementResponse": "Setuju. Strategy Management Office sudah dimasukkan dalam usulan struktur 2025. Traceability matrix akan dikembangkan dengan support konsultan eksternal. Target operasional Q2 2025.",
+          "condition": "Reviu atas Renstra 2022-2027 dan dokumen RKAT 2024 menemukan: 1) Program 'Tabungan' dan 'Cicilan Setoran Lunas' tidak tercantum dalam RKAT 2024; 2) IKU BSC untuk kedua program belum di-set; 3) Anggaran dialokasikan informal melalui reklasifikasi pos lain; 4) Tidak ada Renstra-RKAT-IKU Traceability Matrix.",
+          "criteria": "Renstra 2022-2027 Pasal 12 ayat (3); PP No.8/2006; KNKG GCG Guidelines; COSO 2013 Principle 7; IIA Standard 2120; BSC Methodology",
+          "cause": "Process flow Renstra → RKAT → IKU belum systematic linkage matrix. Tim Perencanaan understaffed. RKAT prep cycle belum integrasikan strategic review. Tidak ada PMO/Strategy Office dedicated.",
+          "effect": "Disconnect strategi-eksekusi 30-40%. Risiko anggaran inefisien Rp2-5M tidak transparent. Pelanggaran prinsip akuntabilitas GCG. Stakeholder confidence menurun.",
+          "recommendation": "Develop Renstra-RKAT-IKU Traceability Matrix Q1 2025. Mandatory inclusion semua program strategis di RKAT. Establish IKU BSC dalam 60 hari. Bentuk Strategy Management Office. Quarterly Strategic Review dengan BoD.",
+          "managementResponse": "Setuju. SMO dimasukkan struktur 2025. Traceability matrix dengan support konsultan eksternal. Target Q2 2025.",
           "targetDate": "2025-06-30",
           "pic": "Direktur Perencanaan Strategis & Direktur Keuangan"
         },
         {
           "id": "F001-2",
           "title": "SOP Hanya Mencakup Proses Administrasi — Belum Mengatur Prosedur Tata Laksana Program",
-          "rating": "medium",
-          "status": "open",
-          "domain": "operations",
-          "fcaArea": "governance",
-          "lod": "first_line",
+          "rating": "medium", "status": "open", "domain": "operations", "fcaArea": "governance", "lod": "first_line",
           "cosoComponents": ["control_activities", "info_communication"],
           "riskCategories": ["operasional", "kepatuhan"],
           "createdDate": "2024-12-10",
-          "condition": "Pengujian atas 47 SOP yang berlaku di organisasi:\n1) 38 SOP (81%) hanya mengatur proses administrasi (registrasi, pencatatan, archiving)\n2) Hanya 9 SOP (19%) yang mencakup prosedur tata laksana program (pelaksanaan, monitoring, evaluasi)\n3) Tidak ada SOP untuk Program Tabungan dan Cicilan Setoran Lunas\n4) SOP untuk event tahunan tidak mencakup procurement sponsorship dan accountability\n5) Last review SOP 2022 — belum di-update sejak Renstra 2022-2027 ditetapkan\n6) Sample 30 transaksi: 11 (37%) dilaksanakan tanpa SOP yang spesifik",
-          "criteria": "ISO 9001:2015 Quality Management — Klausul 4.4 (Process Approach); COSO 2013 Principle 12 (Deploys Through Policies and Procedures); Pedoman Internal Pengembangan SOP No.PED-OPS-001/2021; IIA Standard 2210 (Engagement Objectives)",
-          "cause": "1) SOP development capability di-fokus ke compliance administratif, belum operational excellence\n2) Tidak ada SOP Officer atau Process Excellence team yang dedicated\n3) Belum ada review cycle reguler untuk SOP (recommended: setiap 2 tahun)\n4) Cultural — pegawai cenderung 'tahu by experience' tanpa formalisasi\n5) Knowledge transfer dari senior ke junior staf tidak ter-formal",
-          "effect": "1) Inconsistency dalam pelaksanaan program → hasil tidak repeatable\n2) Risiko operational dari rangkap fungsi atau gap responsibility\n3) Onboarding pegawai baru lebih lambat — dependency pada knowledge senior\n4) Audit trail lemah → temuan auditor eksternal dan potensi pelanggaran regulasi sektor\n5) Knowledge loss saat staf resign atau pensiun",
-          "recommendation": "1) Lakukan SOP Gap Analysis comprehensive (target 60 hari) — list mana yang perlu update/baru\n2) Develop SOP untuk Program Tabungan, Cicilan Setoran Lunas, dan Event Tahunan dengan format end-to-end (admin + tata laksana)\n3) Tetapkan SOP review cycle: minor update annual, major review 2 tahun\n4) Bentuk Process Excellence team atau assign SOP Officer (minimal 1 senior)\n5) Implementasi SOP Management System digital (SharePoint/Confluence/Notion based)\n6) Training mandatory tata laksana program untuk semua PIC operasional",
-          "managementResponse": "Setuju. SOP Gap Analysis akan dilakukan Januari 2025. Process Excellence team akan dievaluasi dalam reorganisasi struktur 2025.",
+          "condition": "Pengujian 47 SOP: 38 (81%) hanya admin; 9 (19%) cover tata laksana; tidak ada SOP untuk Program Tabungan dan Cicilan Setoran Lunas; SOP event tahunan tidak cover sponsorship; last review 2022.",
+          "criteria": "ISO 9001:2015 Klausul 4.4; COSO 2013 Principle 12; Pedoman PED-OPS-001/2021; IIA Standard 2210",
+          "cause": "SOP development fokus compliance administratif. Tidak ada SOP Officer. Belum ada review cycle reguler. Knowledge transfer informal.",
+          "effect": "Inconsistency pelaksanaan program. Risiko operational rangkap fungsi. Onboarding lambat. Audit trail lemah. Knowledge loss saat staf pensiun.",
+          "recommendation": "SOP Gap Analysis 60 hari. Develop SOP end-to-end untuk Program Tabungan, Cicilan Setoran, Event. Review cycle: minor annual, major 2 tahun. Bentuk Process Excellence team. Implementasi SOP Management System digital.",
+          "managementResponse": "Setuju. SOP Gap Analysis Januari 2025. Process Excellence team dievaluasi 2025.",
           "targetDate": "2025-09-30",
           "pic": "Direktur Operasional & Sekretaris Perusahaan"
         },
         {
           "id": "F001-3",
           "title": "Pertanggungjawaban Event Tahunan Belum Mencakup Dana Non-RKAT — Sponsorship Rp1,25 Miliar Tidak Tercatat",
-          "rating": "high",
-          "status": "open",
-          "domain": "finance",
-          "fcaArea": "governance",
-          "lod": "first_line",
+          "rating": "high", "status": "open", "domain": "finance", "fcaArea": "governance", "lod": "first_line",
           "cosoComponents": ["control_activities", "info_communication", "monitoring"],
           "riskCategories": ["keuangan", "kepatuhan", "reputasi", "hukum"],
           "createdDate": "2024-12-10",
-          "condition": "Reviu atas pertanggungjawaban Event Tahunan 'Anniversary Gala 2024':\n1) Dana sponsorship dari 7 mitra sebesar Rp1,25 miliar TIDAK tercatat dalam laporan pertanggungjawaban formal\n2) Dana digunakan untuk pengadaan: katering Rp380jt, dekorasi Rp280jt, talent fee Rp420jt, lain-lain Rp170jt — tanpa SPK formal\n3) 3 dari 7 vendor sponsorship tidak memiliki PKS (Perjanjian Kerja Sama) tertulis\n4) Tidak ada audit trail untuk reconciliation antara dana masuk dan pengeluaran\n5) Bukti pengeluaran berupa bon-bon sederhana (Rp680jt) — tidak melalui purchase order formal\n6) Pajak penghasilan (PPh) atas dana sponsorship belum di-setor — potensi denda Rp187jt\n7) Tidak ada laporan keuangan terpisah untuk event tahunan — hanya summary memo internal",
-          "criteria": "PP No.8/2006 tentang Pelaporan Keuangan; UU No.36/2008 tentang Pajak Penghasilan; PSAK 23 (Pendapatan); KNKG GCG Guidelines — Akuntabilitas; ISO 37001:2016 Anti-Bribery Management Systems (untuk sponsorship); Pedoman Pengelolaan Dana Non-RKAT (jika ada)",
-          "cause": "1) Tidak ada Pedoman Pengelolaan Dana Non-RKAT yang formal\n2) Treasurer/PIC event mengelola dana di-luar sistem akuntansi formal\n3) Tidak ada kewajiban formal melaporkan dana sponsorship ke Bidang Keuangan\n4) Cultural — event committee menganggap dana sponsorship 'ekstra' di-luar mainstream\n5) Lemahnya internal control — tidak ada maker-checker untuk pengeluaran\n6) Ketidaktahuan tax obligation untuk sponsorship",
-          "effect": "1) Risiko denda pajak Rp187jt + bunga + sanksi administratif\n2) Pelanggaran serius prinsip GCG akuntabilitas dan transparansi\n3) Risiko reputasi jika kasus muncul di publik (suspect of bribery atau illicit funds)\n4) Pelanggaran ISO 37001 anti-bribery jika diaudit\n5) Personal liability untuk direksi dan committee members\n6) Audit eksternal qualified opinion risk\n7) Risiko hukum: pidana UU Tipikor jika ditemukan benefit personal\n8) Loss of trust dari mitra sponsorship untuk event berikutnya",
-          "recommendation": "1) URGENT: Lakukan investigasi forensic atas Rp1,25 miliar dalam 30 hari — verifikasi semua pengeluaran legitimate\n2) Setor pajak PPh sponsorship + denda dalam 14 hari untuk minimize sanksi\n3) Develop Pedoman Pengelolaan Dana Non-RKAT formal (target 60 hari)\n4) Mandatory: semua dana sponsorship tercatat di sistem akuntansi formal — no off-book\n5) Implementasi maker-checker untuk semua pengeluaran event ≥Rp10jt\n6) Wajibkan PKS tertulis dengan klausul akuntabilitas untuk semua sponsorship\n7) Quarterly reporting event accountability ke Komite Audit\n8) Training tax compliance untuk Treasurer dan event PIC\n9) Pertimbangkan engage forensic auditor eksternal untuk independent assurance",
-          "managementResponse": "Sangat setuju ini critical. Tim investigasi internal sudah dibentuk. Konsultan forensic akan engaged untuk independent review. Pedoman Pengelolaan Dana Non-RKAT akan diprioritaskan untuk Q1 2025.",
+          "condition": "Reviu Event Tahunan 'Anniversary Gala 2024': sponsorship 7 mitra Rp1,25M TIDAK tercatat formal. Dana untuk katering Rp380jt, dekorasi Rp280jt, talent fee Rp420jt tanpa SPK. 3/7 vendor tanpa PKS. Tidak ada audit trail. PPh sponsorship belum disetor — potensi denda Rp187jt.",
+          "criteria": "PP No.8/2006; UU 36/2008 PPh; PSAK 23; KNKG GCG; ISO 37001:2016 Anti-Bribery",
+          "cause": "Tidak ada Pedoman Dana Non-RKAT. Treasurer kelola dana di-luar sistem akuntansi. Tidak ada kewajiban formal lapor. Tidak ada maker-checker.",
+          "effect": "Risiko denda pajak Rp187jt+. Pelanggaran GCG akuntabilitas serius. Risiko reputasi (suspect bribery). Pelanggaran ISO 37001. Personal liability direksi. Risiko UU Tipikor.",
+          "recommendation": "URGENT investigasi forensic Rp1,25M dalam 30 hari. Setor PPh 14 hari. Develop Pedoman Dana Non-RKAT 60 hari. Mandatory tercatat sistem akuntansi formal. Maker-checker untuk pengeluaran event ≥Rp10jt. PKS tertulis untuk semua sponsorship. Quarterly reporting ke Komite Audit.",
+          "managementResponse": "Sangat setuju critical. Tim investigasi internal dibentuk. Konsultan forensic akan engaged. Pedoman Q1 2025.",
           "targetDate": "2025-03-31",
           "pic": "Direktur Keuangan & Sekretaris Perusahaan"
         },
         {
           "id": "F001-4",
           "title": "Tugas Pengelolaan Data Peserta Belum Dimuat dalam SOTK — Gap Job Description & Akuntabilitas Pelindungan Data",
-          "rating": "medium",
-          "status": "open",
-          "domain": "it_security",
-          "fcaArea": "governance",
-          "lod": "first_line",
+          "rating": "medium", "status": "open", "domain": "it_security", "fcaArea": "governance", "lod": "first_line",
           "cosoComponents": ["control_environment", "control_activities"],
           "riskCategories": ["operasional", "kepatuhan", "hukum"],
           "createdDate": "2024-12-10",
-          "condition": "Reviu atas Struktur Organisasi & Tata Kerja (SOTK) terkini:\n1) SOTK tidak memuat tugas pengelolaan data peserta (estimasi 47.000+ records)\n2) Tidak ada Data Protection Officer (DPO) atau function setara — wajib per UU 27/2022 PDP untuk organisasi dengan data >10.000 subjek\n3) PIC pengelolaan data peserta secara de-facto adalah 4 staf di berbagai unit, namun tidak formal di-assign\n4) Job description 4 staf tersebut tidak mencakup data protection responsibility\n5) Tidak ada formal training Data Protection untuk staf pengelola data\n6) Bidang IT menangani aspek teknis, namun governance data protection belum ditugaskan ke fungsi spesifik\n7) Data classification policy belum ada (PII, sensitive data, public data)\n8) Last SOTK update: 2022 — sebelum UU PDP berlaku efektif",
-          "criteria": "UU No.27/2022 tentang Pelindungan Data Pribadi (PDP) — Pasal 53-55 (DPO requirement); ISO/IEC 27701:2019 Privacy Information Management; KNKG GCG Guidelines — Lingkungan Pengendalian; COSO 2013 Principle 3 (Establishes Structure, Authority, and Responsibility); Permenkominfo PDP implementing regulations",
-          "cause": "1) SOTK update lag — belum keep up dengan regulatory landscape (UU PDP)\n2) Awareness rendah tentang DPO requirement di level senior management\n3) Process organizational change management belum incorporate regulatory updates\n4) Bidang HR tidak track regulatory changes yang impact organizational structure\n5) Tidak ada periodic review SOTK (recommended: annual)\n6) Resource constraint — DPO requires senior level dengan kompetensi spesifik",
-          "effect": "1) Pelanggaran UU PDP — denda KPDP potensial Rp1-50 miliar (UU PDP Pasal 57)\n2) Risiko personal liability untuk Direksi (UU PDP memungkinkan personal sanction)\n3) Data breach risk meningkat tanpa governance jelas\n4) Reputational damage jika ada insiden privacy\n5) Vendor/mitra concern tentang data sharing agreements\n6) Kompetitif disadvantage — kompetitor sudah compliant\n7) Gap dalam internal control — accountability tidak jelas saat insiden",
-          "recommendation": "1) URGENT: Update SOTK untuk memasukkan tugas pengelolaan data peserta (target 90 hari)\n2) Recruit atau assign Data Protection Officer (DPO) — minimal level Senior Manager\n3) Tetapkan formal PIC untuk pengelolaan data peserta dengan job description spesifik\n4) Develop Data Protection Policy & Data Classification Standard\n5) Mandatory training UU PDP untuk semua staf pengelola data (min. 16 jam/tahun)\n6) Implementasi annual SOTK review dengan focus on regulatory alignment\n7) Establish Privacy Impact Assessment (PIA) framework untuk program/sistem baru\n8) Lakukan PDP Compliance Self-Assessment dalam 60 hari\n9) Coordinate dengan Bidang Hukum untuk privacy notice update",
-          "managementResponse": "Setuju. Recruitment DPO sudah dimasukkan dalam Manpower Planning 2025. SOTK update akan diprioritaskan Q1 2025. Konsultan PDP akan engaged untuk gap assessment.",
+          "condition": "Reviu SOTK: tidak memuat tugas pengelolaan data peserta (47.000+ records). Tidak ada DPO — wajib UU 27/2022 PDP. PIC de-facto 4 staf tidak formal. Job description tidak mencakup data protection. Tidak ada training UU PDP. Last SOTK update 2022.",
+          "criteria": "UU 27/2022 PDP Pasal 53-55; ISO/IEC 27701:2019; KNKG GCG; COSO 2013 Principle 3",
+          "cause": "SOTK update lag belum keep up regulatory landscape. Awareness rendah DPO requirement. Process organizational change belum incorporate regulatory updates.",
+          "effect": "Pelanggaran UU PDP — denda Rp1-50M (Pasal 57). Personal liability direksi. Data breach risk. Reputational damage. Vendor concern data sharing.",
+          "recommendation": "URGENT update SOTK 90 hari. Recruit DPO senior level. PIC formal job description spesifik. Develop Data Protection Policy & Classification. Mandatory training UU PDP min 16 jam/tahun. Annual SOTK review.",
+          "managementResponse": "Setuju. DPO masuk Manpower Planning 2025. SOTK update Q1 2025. Konsultan PDP untuk gap assessment.",
           "targetDate": "2025-06-30",
           "pic": "Direktur SDM & Direktur Hukum/Kepatuhan"
         }
       ],
-      "observations": [
-        {
-          "id": "O001",
-          "title": "Renstra Annual Review Tidak Dilakukan Secara Formal Sejak 2022",
-          "notes": "Renstra 2022-2027 ditetapkan tanpa annual review formal. Disarankan implementasi Quarterly Strategic Review (QSR) dengan BoD untuk monitor execution dan respond ke perubahan environment. Best practice: McKinsey Strategy Refresh framework atau OKR methodology untuk dynamic strategy execution."
-        },
-        {
-          "id": "O002",
-          "title": "IKU BSC Belum Cascade ke Level Individual",
-          "notes": "Sample 12 staf operasional: 8 (67%) tidak memiliki IKU individual yang link ke IKU unit dan IKU strategis. Disarankan implementasi BSC cascade end-to-end dari corporate → unit → individual untuk strengthen line-of-sight execution."
-        },
-        {
-          "id": "O003",
-          "title": "Strategy-Operations Integration Forum Belum Ada",
-          "notes": "Tidak ada reguler forum yang menyatukan tim Perencanaan dan tim Operasional untuk discuss strategic alignment. Disarankan monthly Strategy-Operations Review meeting dengan agenda: progress IKU, emerging risks, resource reallocation."
-        },
-        {
-          "id": "O004",
-          "title": "Vendor Sponsorship Database Belum Ter-konsolidasi",
-          "notes": "Mitra sponsorship event tahunan tersebar di Excel berbagai unit, tidak terkonsolidasi. Disarankan develop Vendor Sponsorship Master Database dengan tracking: cumulative value, conflict of interest check, multi-year relationship analysis."
-        },
-        {
-          "id": "O005",
-          "title": "Knowledge Management System untuk SOP Belum Mature",
-          "notes": "SOP saat ini di-manage via shared folder tanpa version control yang strict. Disarankan implementasi digital SOP Management System (Confluence, Notion, atau Lucidchart) dengan version control, approval workflow, dan search capability."
-        }
-      ],
       "fraudIndicators": [
-        {
-          "id": "FI-001",
-          "title": "Off-book transactions melalui dana sponsorship",
-          "description": "Pengeluaran Rp680jt dari dana sponsorship melalui bon-bon sederhana tanpa purchase order formal. Pattern klasik off-book scheme.",
-          "scheme": "Off-book transactions / Slush fund",
-          "acfeCategory": "asset_misappropriation",
-          "fraudTriangle": ["opportunity", "rationalization"],
-          "likelihood": 4,
-          "impact": 4,
-          "hasMitigation": false,
-          "mitigation": ""
-        },
-        {
-          "id": "FI-002",
-          "title": "Vendor tanpa PKS formal — potensi kickback",
-          "description": "3 dari 7 vendor sponsorship tidak memiliki Perjanjian Kerja Sama tertulis. Risiko kolusi dan kickback dari vendor ke event committee.",
-          "scheme": "Bid rigging / Kickback",
-          "acfeCategory": "corruption",
-          "fraudTriangle": ["opportunity"],
-          "likelihood": 3,
-          "impact": 4,
-          "hasMitigation": false,
-          "mitigation": ""
-        },
-        {
-          "id": "FI-003",
-          "title": "Tax evasion atas dana sponsorship",
-          "description": "PPh sponsorship Rp1,25 miliar tidak di-setor. Bisa argue 'oversight' tapi pattern menunjukkan deliberate avoidance.",
-          "scheme": "Tax fraud",
-          "acfeCategory": "compliance_regulatory",
-          "fraudTriangle": ["pressure", "rationalization"],
-          "likelihood": 4,
-          "impact": 5,
-          "hasMitigation": false,
-          "mitigation": ""
-        },
-        {
-          "id": "FI-004",
-          "title": "Reklasifikasi anggaran informal",
-          "description": "Anggaran operasional Program Tabungan dialokasikan via reklasifikasi pos lain. Pattern budget manipulation.",
-          "scheme": "Budget manipulation",
-          "acfeCategory": "financial_statement",
-          "fraudTriangle": ["pressure", "opportunity"],
-          "likelihood": 3,
-          "impact": 3,
-          "hasMitigation": false,
-          "mitigation": ""
-        },
-        {
-          "id": "FI-005",
-          "title": "Akses data peserta tanpa governance",
-          "description": "47.000+ data peserta tidak ter-govern. Risiko unauthorized access, data exfiltration, atau identity theft oleh insider.",
-          "scheme": "Data theft / Privacy breach",
-          "acfeCategory": "it_cyber",
-          "fraudTriangle": ["opportunity"],
-          "likelihood": 3,
-          "impact": 5,
-          "hasMitigation": false,
-          "mitigation": ""
-        }
+        { "id": "FI-001-1", "title": "Off-book Transactions Sponsorship Event", "description": "Dana sponsorship Rp1,25M tidak tercatat sistem akuntansi formal", "scheme": "Off-book transactions", "severity": "high", "likelihood": 4, "impact": 5, "page": 3, "hasMitigation": false, "acfeCategory": "asset_misappropriation" },
+        { "id": "FI-001-2", "title": "Vendor Tanpa PKS Tertulis (Bid Rigging Risk)", "description": "3 dari 7 vendor sponsorship tanpa Perjanjian Kerja Sama formal", "scheme": "Vendor without contract", "severity": "high", "likelihood": 4, "impact": 4, "page": 4, "hasMitigation": false, "acfeCategory": "corruption" },
+        { "id": "FI-001-3", "title": "Tax Evasion Sponsorship", "description": "PPh sponsorship belum disetor — potensi denda Rp187jt", "scheme": "Tax evasion", "severity": "high", "likelihood": 5, "impact": 4, "page": 5, "hasMitigation": false, "acfeCategory": "compliance_regulatory" },
+        { "id": "FI-001-4", "title": "Reklasifikasi Anggaran Informal", "description": "Anggaran Program Tabungan dialokasikan informal via reklasifikasi pos lain", "scheme": "Earnings management", "severity": "medium", "likelihood": 3, "impact": 3, "page": 2, "hasMitigation": false, "acfeCategory": "financial_statement" },
+        { "id": "FI-001-5", "title": "Akses Data Peserta Tanpa Governance", "description": "47.000+ records data peserta tanpa DPO governance jelas", "scheme": "Unauthorized data access", "severity": "medium", "likelihood": 3, "impact": 4, "page": 6, "hasMitigation": false, "acfeCategory": "it_cyber" }
+      ],
+      "observations": [
+        { "id": "O001", "title": "Renstra Annual Review Tidak Dilakukan Formal Sejak 2022", "notes": "Disarankan QSR dengan BoD untuk monitor execution." },
+        { "id": "O002", "title": "IKU BSC Belum Cascade ke Level Individual", "notes": "67% staf tidak punya IKU individual yang link ke unit/strategis." },
+        { "id": "O003", "title": "Strategy-Operations Integration Forum Belum Ada", "notes": "Disarankan monthly review meeting." },
+        { "id": "O004", "title": "Vendor Sponsorship Database Belum Ter-konsolidasi", "notes": "Tersebar di Excel berbagai unit." },
+        { "id": "O005", "title": "Knowledge Management System untuk SOP Belum Mature", "notes": "Shared folder tanpa version control." }
       ],
       "auditTimeline": [
         { "date": "2024-09-01", "event": "Surat Tugas Audit Diterbitkan", "type": "milestone" },
-        { "date": "2024-09-05", "event": "Entry Meeting dengan Manajemen", "type": "meeting" },
         { "date": "2024-09-15", "event": "Field Work Phase 1 — Strategic Planning Review", "type": "fieldwork" },
-        { "date": "2024-10-10", "event": "Field Work Phase 2 — Event Accountability Review", "type": "fieldwork" },
-        { "date": "2024-11-05", "event": "Field Work Phase 3 — SOTK & Data Governance", "type": "fieldwork" },
-        { "date": "2024-11-20", "event": "Konsep Temuan Disampaikan ke Manajemen", "type": "draft" },
-        { "date": "2024-12-05", "event": "Tanggapan Manajemen Diterima", "type": "response" },
-        { "date": "2024-12-12", "event": "Exit Meeting", "type": "meeting" },
         { "date": "2024-12-15", "event": "Laporan Hasil Audit Final Diterbitkan", "type": "milestone" }
+      ]
+    },
+    {
+      "number": "002/LHA/AI/11/2024",
+      "title": "Audit Tata Kelola Pengadaan Barang & Jasa Periode Q1-Q3 2024",
+      "date": "2024-11-20",
+      "period": "Januari - September 2024",
+      "rating": "kurang_efektif",
+      "organization": "PT Mitra Sejahtera Nusantara — Mockup",
+      "unit": "Bidang Pengadaan & Logistik",
+      "objective": "Menilai efektivitas tata kelola pengadaan barang dan jasa dengan fokus pada Segregation of Duties, threshold tender, dan integrity vendor master",
+      "scope": "Procurement workflow, Vendor management, Tender process, ERP controls",
+      "team": [
+        { "role": "Penanggung Jawab", "name": "Drs. Ahmad Fauzan, M.Ak., CIA, CRMA" },
+        { "role": "Ketua Tim", "name": "Budi Santoso, S.Kom., M.M., QIA, CISA" }
+      ],
+      "cosoAssessment": {
+        "control_environment": { "rating": "perlu_perbaikan", "notes": "Tone at the top tentang procurement integrity perlu penguatan." },
+        "risk_assessment": { "rating": "perlu_perbaikan", "notes": "Risk register pengadaan belum ter-update." },
+        "control_activities": { "rating": "lemah", "notes": "SoD violations 26.7% transaksi. Tender bypass Rp4,2M." },
+        "info_communication": { "rating": "perlu_perbaikan", "notes": "Reporting pengadaan ke Komite tidak rutin." },
+        "monitoring": { "rating": "perlu_perbaikan", "notes": "Vendor master review tidak periodik." }
+      },
+      "findings": [
+        {
+          "id": "F002-1",
+          "title": "Kelemahan Segregation of Duties pada Workflow Pengadaan — 12 Transaksi (26,7%) Tanpa SoD",
+          "rating": "high", "status": "in_progress", "domain": "procurement", "fcaArea": "procurement", "lod": "first_line",
+          "cosoComponents": ["control_activities", "control_environment"],
+          "riskCategories": ["operasional", "kepatuhan", "reputasi"],
+          "createdDate": "2024-11-15",
+          "condition": "Pengujian 45 transaksi pengadaan: 12 (26,7%) di mana fungsi inisiator, verifikator, approver dilakukan satu orang. ERP belum dikonfigurasi enforce SoD matrix.",
+          "criteria": "Pedoman PED-PRC-001/2023 Pasal 12; COSO 2013 Principle 10; PMK Pengadaan",
+          "cause": "Pembatasan SDM unit pengadaan. ERP belum dikonfigurasi SoD enforcement. Tidak ada threshold-based escalation matrix.",
+          "effect": "Risiko fraud meningkat — potensi kerugian Rp600jt-Rp1,2M (ACFE benchmark). Pelanggaran prinsip GCG. Risiko temuan auditor eksternal.",
+          "recommendation": "Konfigurasi ERP SoD matrix Q1 2025. Recruit 2 staf tambahan. Threshold-based escalation matrix ter-otomasi.",
+          "managementResponse": "Setuju. ERP enhancement masuk RKAT 2025. Vendor cleansing target Q2 2025.",
+          "targetDate": "2025-06-30",
+          "pic": "Direktur Operasional & Kepala Unit Pengadaan"
+        },
+        {
+          "id": "F002-2",
+          "title": "Tujuh Transaksi di atas Threshold Rp500jt Tidak Melalui Tender — Total Rp4,2 Miliar",
+          "rating": "high", "status": "in_progress", "domain": "procurement", "fcaArea": "procurement", "lod": "first_line",
+          "cosoComponents": ["control_activities"],
+          "riskCategories": ["operasional", "kepatuhan", "hukum"],
+          "createdDate": "2024-11-15",
+          "condition": "7 transaksi total Rp4,2M periode Q2-Q3 2024 tidak melalui tender meskipun di atas threshold Rp500jt. Justifikasi pengecualian tidak terdokumentasi formal.",
+          "criteria": "Pedoman Pengadaan Pasal 15; PMK Pengadaan Barang/Jasa",
+          "cause": "Mekanisme exception approval kurang ketat. Tidak ada threshold-based escalation matrix tervalidasi sistem.",
+          "effect": "Risiko vendor monopoli. Potensi mark-up harga. Pelanggaran prinsip kompetisi pengadaan.",
+          "recommendation": "Threshold matrix tervalidasi sistem. Mandatory tender >Rp500jt no exception. Audit retrospektif 7 transaksi.",
+          "managementResponse": "Setuju. Audit retrospektif 7 transaksi sedang berlangsung.",
+          "targetDate": "2025-03-31",
+          "pic": "Direktur Operasional"
+        },
+        {
+          "id": "F002-3",
+          "title": "Vendor Master Database Mengandung 23 Vendor Duplikat dengan NPWP Sama",
+          "rating": "medium", "status": "open", "domain": "procurement", "fcaArea": "procurement", "lod": "first_line",
+          "cosoComponents": ["control_activities", "info_communication"],
+          "riskCategories": ["operasional", "kepatuhan"],
+          "createdDate": "2024-11-15",
+          "condition": "Vendor master mengandung 23 vendor duplikat NPWP sama nama berbeda. Tidak ada validasi NPWP otomatis saat onboarding.",
+          "criteria": "SOP Vendor Management; Master Data Management Best Practice",
+          "cause": "Onboarding manual tanpa validasi DJP API. Tidak ada deduplication tool.",
+          "effect": "Risiko split-purchase untuk hindari threshold tender. Data quality buruk.",
+          "recommendation": "Vendor master cleansing dengan validasi NPWP via DJP API. Implementasi deduplication tool. Quarterly data quality review.",
+          "managementResponse": "Setuju. Vendor cleansing target Q2 2025.",
+          "targetDate": "2025-06-30",
+          "pic": "Kepala Unit Pengadaan & Direktur TI"
+        }
+      ],
+      "fraudIndicators": [
+        { "id": "FI-002-1", "title": "Rangkap Fungsi Pengadaan", "description": "12 transaksi (26.7%) tanpa SoD", "scheme": "SoD violation", "severity": "high", "likelihood": 4, "impact": 4, "hasMitigation": false, "acfeCategory": "asset_misappropriation" },
+        { "id": "FI-002-2", "title": "Tender Bypass Rp4,2M", "description": "7 transaksi tanpa tender meskipun >Rp500jt", "scheme": "Bypass control", "severity": "high", "likelihood": 5, "impact": 5, "hasMitigation": false, "acfeCategory": "corruption" },
+        { "id": "FI-002-3", "title": "Vendor Duplikat (Split-Purchase Risk)", "description": "23 vendor duplikat NPWP sama", "scheme": "Split-purchase scheme", "severity": "medium", "likelihood": 3, "impact": 4, "hasMitigation": false, "acfeCategory": "corruption" },
+        { "id": "FI-002-4", "title": "Mark-up Harga Risk", "description": "Tanpa kompetisi tender berisiko mark-up", "scheme": "Price manipulation", "severity": "medium", "likelihood": 3, "impact": 3, "hasMitigation": false, "acfeCategory": "corruption" }
+      ],
+      "observations": [
+        { "id": "O201", "title": "Vendor Performance Evaluation Tidak Sistematis", "notes": "Hanya 18% vendor dievaluasi formal akhir kontrak." },
+        { "id": "O202", "title": "Procurement Dashboard Belum Ada", "notes": "Tidak ada real-time visibility ke leadership." }
+      ],
+      "auditTimeline": [
+        { "date": "2024-09-01", "event": "Entry Meeting", "type": "meeting" },
+        { "date": "2024-11-20", "event": "LHA Final Diterbitkan", "type": "milestone" }
+      ]
+    },
+    {
+      "number": "003/LHA/AI/10/2024",
+      "title": "Audit Pengelolaan Keuangan & Rekonsiliasi Bank Periode Januari-September 2024",
+      "date": "2024-10-30",
+      "period": "Januari - September 2024",
+      "rating": "cukup_efektif",
+      "organization": "PT Mitra Sejahtera Nusantara — Mockup",
+      "unit": "Bidang Keuangan",
+      "objective": "Menilai timeliness, akurasi, dan kontrol rekonsiliasi bank untuk 8 rekening operasional",
+      "scope": "Bank reconciliation, Outstanding items, Dual-review controls",
+      "team": [
+        { "role": "Penanggung Jawab", "name": "Drs. Ahmad Fauzan, M.Ak., CIA, CRMA" },
+        { "role": "Ketua Tim", "name": "Budi Santoso, S.Kom., M.M., QIA, CISA" }
+      ],
+      "cosoAssessment": {
+        "control_environment": { "rating": "memadai", "notes": "Tone keuangan baik." },
+        "risk_assessment": { "rating": "perlu_perbaikan", "notes": "Risiko outstanding items belum ter-assess." },
+        "control_activities": { "rating": "perlu_perbaikan", "notes": "Manual Excel, tidak ada dual-review >Rp1M." },
+        "info_communication": { "rating": "perlu_perbaikan", "notes": "Reporting selisih ke management lemah." },
+        "monitoring": { "rating": "perlu_perbaikan", "notes": "4 selisih berulang belum diinvestigasi." }
+      },
+      "findings": [
+        {
+          "id": "F003-1",
+          "title": "Rekonsiliasi Bank Bulanan Belum Tepat Waktu — Rata-rata T+18 (Target T+5)",
+          "rating": "medium", "status": "open", "domain": "finance", "fcaArea": "none", "lod": "first_line",
+          "cosoComponents": ["control_activities", "monitoring"],
+          "riskCategories": ["operasional", "keuangan"],
+          "createdDate": "2024-10-25",
+          "condition": "Reviu 8 rekening: rata-rata selesai T+18 (target T+5). 23 outstanding items >60 hari Rp187jt. 4 selisih berulang. Tidak ada dual-review >Rp1M.",
+          "criteria": "SOP-FIN-012; PSAK 71; Industry 5-day close",
+          "cause": "Volume naik 35% YoY tanpa SDM tambahan. Tools manual Excel. Bank format tidak terstandar antar 8 bank.",
+          "effect": "Laporan keuangan tertunda. Outstanding items berisiko unrecoverable. Potensi misstatement.",
+          "recommendation": "Automated reconciliation tool (BlackLine/SAP) ROI <18 bulan. Integrasi host-to-host 8 bank. Clear 23 outstanding items 60 hari. KPI individu T+5.",
+          "managementResponse": "Setuju automation. Vendor evaluation in progress.",
+          "targetDate": "2025-05-31",
+          "pic": "Direktur Keuangan"
+        },
+        {
+          "id": "F003-2",
+          "title": "Tidak Ada Dual-Review untuk Rekonsiliasi di atas Rp1 Miliar",
+          "rating": "medium", "status": "open", "domain": "finance", "fcaArea": "none", "lod": "first_line",
+          "cosoComponents": ["control_activities"],
+          "riskCategories": ["operasional", "kepatuhan"],
+          "createdDate": "2024-10-25",
+          "condition": "Sample 12 rekonsiliasi material >Rp1M: hanya single-reviewer. Pedoman maker-checker belum di-update sejak 2020.",
+          "criteria": "COSO 2013 Principle 12; Pedoman Maker-Checker Internal",
+          "cause": "Pedoman maker-checker outdated. Threshold material belum disesuaikan dengan growth.",
+          "effect": "Risiko error/fraud tidak terdeteksi pada rekonsiliasi material.",
+          "recommendation": "Update pedoman maker-checker. Mandatory dual-review >Rp1M dengan workflow. Audit retrospektif sample.",
+          "managementResponse": "Setuju. Update pedoman Q1 2025.",
+          "targetDate": "2025-03-31",
+          "pic": "Direktur Keuangan"
+        }
+      ],
+      "fraudIndicators": [
+        { "id": "FI-003-1", "title": "Selisih Rekonsiliasi Berulang", "description": "4 selisih berulang setiap bulan belum diinvestigasi tuntas", "scheme": "Skimming pattern", "severity": "high", "likelihood": 4, "impact": 3, "hasMitigation": false, "acfeCategory": "asset_misappropriation" },
+        { "id": "FI-003-2", "title": "Outstanding Items Aging Risk", "description": "23 items >60 hari Rp187jt", "scheme": "Aging risk", "severity": "medium", "likelihood": 3, "impact": 3, "hasMitigation": false, "acfeCategory": "financial_statement" },
+        { "id": "FI-003-3", "title": "Single-Reviewer Material Reconciliation", "description": "Rekonsiliasi >Rp1M tanpa dual-review", "scheme": "Weak control", "severity": "high", "likelihood": 3, "impact": 4, "hasMitigation": false, "acfeCategory": "financial_statement" }
+      ],
+      "observations": [
+        { "id": "O301", "title": "Bank Statement Format Tidak Terstandar", "notes": "8 bank format berbeda menambah complexity rekonsiliasi." }
+      ],
+      "auditTimeline": [
+        { "date": "2024-08-15", "event": "Entry Meeting", "type": "meeting" },
+        { "date": "2024-10-30", "event": "LHA Final", "type": "milestone" }
+      ]
+    },
+    {
+      "number": "004/LHA/AI/12/2024",
+      "title": "Audit Anti-Money Laundering & Counter-Terrorism Financing (AML/CFT) Tahun 2024",
+      "date": "2024-12-18",
+      "period": "Januari - November 2024",
+      "rating": "kurang_efektif",
+      "organization": "PT Mitra Sejahtera Nusantara — Mockup",
+      "unit": "Bidang Kepatuhan",
+      "objective": "Menilai efektivitas AML/CFT screening dan pelaporan transaksi mencurigakan",
+      "scope": "Sanction screening, PEP/Adverse media, Customer Due Diligence, Transaction Monitoring",
+      "team": [
+        { "role": "Penanggung Jawab", "name": "Drs. Ahmad Fauzan, M.Ak., CIA, CRMA" },
+        { "role": "Ketua Tim", "name": "Budi Santoso, S.Kom., M.M., QIA, CISA" }
+      ],
+      "cosoAssessment": {
+        "control_environment": { "rating": "perlu_perbaikan", "notes": "Compliance kekurangan SDM (rasio 1:5000)." },
+        "risk_assessment": { "rating": "lemah", "notes": "AML Risk Assessment belum di-update." },
+        "control_activities": { "rating": "lemah", "notes": "Sanction list lag 9 bulan. Adverse media tidak ada." },
+        "info_communication": { "rating": "lemah", "notes": "Tidak terhubung PPATK DTTOT real-time." },
+        "monitoring": { "rating": "perlu_perbaikan", "notes": "8 red flags tidak di-escalate." }
+      },
+      "findings": [
+        {
+          "id": "F004-1",
+          "title": "Sanction List Terlambat Update 9 Bulan; Tidak Real-Time dengan PPATK DTTOT",
+          "rating": "high", "status": "in_progress", "domain": "aml_compliance", "fcaArea": "aml_cft", "lod": "second_line",
+          "cosoComponents": ["control_activities", "info_communication", "risk_assessment"],
+          "riskCategories": ["kepatuhan", "reputasi", "hukum"],
+          "createdDate": "2024-12-15",
+          "condition": "Sanction list versi Q1 2024 — lag 9 bulan. Tidak terhubung PPATK DTTOT real-time, batch bulanan. Adverse media & PEP database belum implementasi.",
+          "criteria": "UU 8/2010 TPPU; Peraturan PPATK 11/2016; FATF Recommendations; UN Sanctions; OFAC SDN",
+          "cause": "Vendor AML tool tidak include real-time updates. Kontrak vendor expired. Compliance team kekurangan SDM.",
+          "effect": "Risiko transaksi sanctioned parties — denda Rp10M+. Risiko reputasi. Pidana Direksi (max 15 thn UU TPPU).",
+          "recommendation": "URGENT update sanction list & PPATK DTTOT API 30 hari. Renew kontrak vendor real-time. Implementasi adverse media & PEP screening Q1 2025. Recruit 3 compliance analyst.",
+          "managementResponse": "Sangat setuju critical. Emergency procurement vendor sudah dimulai.",
+          "targetDate": "2025-03-31",
+          "pic": "Direktur Kepatuhan / MLRO"
+        },
+        {
+          "id": "F004-2",
+          "title": "Delapan Transaksi Red Flag Tidak Di-Escalate ke Compliance — Tidak Ada SAR",
+          "rating": "high", "status": "in_progress", "domain": "aml_compliance", "fcaArea": "aml_cft", "lod": "first_line",
+          "cosoComponents": ["control_activities", "monitoring"],
+          "riskCategories": ["kepatuhan", "hukum", "reputasi"],
+          "createdDate": "2024-12-15",
+          "condition": "Sample 200 transaksi: 8 (4%) red flag (structuring, rapid movement, high-risk geography) tidak di-escalate. Tidak ada SAR difile.",
+          "criteria": "UU 8/2010 Pasal 23; Peraturan PPATK STR/CTR",
+          "cause": "Awareness frontline rendah. Tidak ada decision tree formal. Fear-of-false-positive culture.",
+          "effect": "Pelanggaran kewajiban pelaporan. Pidana Direksi & MLRO. Risiko denda PPATK. Reputasi viral.",
+          "recommendation": "Investigasi forensik 8 transaksi & file SAR. Refresh red flag training tahunan. Decision tree formal escalation. Whistleblower protection.",
+          "managementResponse": "Tim investigation 8 transaksi sudah dibentuk.",
+          "targetDate": "2025-03-31",
+          "pic": "Direktur Kepatuhan / MLRO"
+        }
+      ],
+      "fraudIndicators": [
+        { "id": "FI-004-1", "title": "Transaksi dengan Sanctioned Parties Risk", "description": "Sanction list outdated 9 bulan", "scheme": "Sanctions evasion", "severity": "high", "likelihood": 4, "impact": 5, "hasMitigation": false, "acfeCategory": "compliance_regulatory" },
+        { "id": "FI-004-2", "title": "Structuring Pattern", "description": "8 transaksi pattern structuring tidak di-escalate", "scheme": "Structuring", "severity": "high", "likelihood": 4, "impact": 4, "hasMitigation": false, "acfeCategory": "compliance_regulatory" },
+        { "id": "FI-004-3", "title": "Rapid Movement of Funds", "description": "Pergerakan dana cepat tanpa underlying", "scheme": "Layering", "severity": "high", "likelihood": 4, "impact": 4, "hasMitigation": false, "acfeCategory": "compliance_regulatory" },
+        { "id": "FI-004-4", "title": "High-Risk Geography Transactions", "description": "Transaksi ke FATF high-risk jurisdictions", "scheme": "Geographic risk", "severity": "high", "likelihood": 3, "impact": 5, "hasMitigation": false, "acfeCategory": "compliance_regulatory" },
+        { "id": "FI-004-5", "title": "Tidak Ada SAR Difile", "description": "Pelanggaran kewajiban pelaporan", "scheme": "Reporting failure", "severity": "high", "likelihood": 5, "impact": 4, "hasMitigation": false, "acfeCategory": "compliance_regulatory" }
+      ],
+      "observations": [
+        { "id": "O401", "title": "Compliance Workload Backlog 47 Cases", "notes": "Rasio compliance:nasabah 1:5000 (ideal 1:2000)." }
+      ],
+      "auditTimeline": [
+        { "date": "2024-10-01", "event": "Entry Meeting", "type": "meeting" },
+        { "date": "2024-12-18", "event": "LHA Final", "type": "milestone" }
+      ]
+    },
+    {
+      "number": "005/LHA/AI/12/2024",
+      "title": "Audit Business Continuity Plan & Disaster Recovery Plan Tahun 2024",
+      "date": "2024-12-12",
+      "period": "Januari - November 2024",
+      "rating": "kurang_efektif",
+      "organization": "PT Mitra Sejahtera Nusantara — Mockup",
+      "unit": "Bidang Manajemen Risiko & TI",
+      "objective": "Menilai kesiapan BCP/DRP organisasi dan kemampuan recovery saat disaster",
+      "scope": "BCP testing, BIA, RTO/RPO, DR site activation, BCP training",
+      "team": [
+        { "role": "Penanggung Jawab", "name": "Drs. Ahmad Fauzan, M.Ak., CIA, CRMA" },
+        { "role": "Ketua Tim", "name": "Reza Pratama, ST., M.T., CRISC" }
+      ],
+      "cosoAssessment": {
+        "control_environment": { "rating": "perlu_perbaikan", "notes": "Tidak ada BCM Officer dedicated." },
+        "risk_assessment": { "rating": "lemah", "notes": "BIA terakhir 2020." },
+        "control_activities": { "rating": "lemah", "notes": "BCP tidak diuji sejak Feb 2022." },
+        "info_communication": { "rating": "perlu_perbaikan", "notes": "Communication plan disaster outdated." },
+        "monitoring": { "rating": "lemah", "notes": "Tidak ada BCP test report formal." }
+      },
+      "findings": [
+        {
+          "id": "F005-1",
+          "title": "BCP Belum Diuji Sejak Februari 2022 (>30 Bulan) — Recovery Capability Tidak Terverifikasi",
+          "rating": "high", "status": "open", "domain": "bcp_drm", "fcaArea": "operational_resilience", "lod": "second_line",
+          "cosoComponents": ["risk_assessment", "monitoring"],
+          "riskCategories": ["operasional", "strategis", "reputasi"],
+          "createdDate": "2024-12-10",
+          "condition": "Last BCP test 14 Feb 2022 (>30 bulan). BCP last updated 2021 — tidak mencerminkan struktur 2023-2024. RTO/RPO sistem kritis belum formal.",
+          "criteria": "ISO 22301:2019; Best Practice Annual BCP Testing",
+          "cause": "Anggapan BCP testing 'mengganggu operasional'. Tidak ada BCM Officer. Anggaran BCP testing belum dialokasikan.",
+          "effect": "Recovery capability TIDAK TERVERIFIKASI. Estimasi loss disaster Rp2-5M/hari downtime core operations.",
+          "recommendation": "BCP tabletop 30 hari. Full BCP test (failover DR) 90 hari. Update BCP documentation. Bentuk BCM Steering Committee.",
+          "managementResponse": "Setuju high priority. Tabletop Februari 2025. Full test Q2 2025.",
+          "targetDate": "2025-06-30",
+          "pic": "Direktur Risiko & Direktur TI"
+        },
+        {
+          "id": "F005-2",
+          "title": "RTO/RPO Sistem Kritis Belum Di-define Formal",
+          "rating": "medium", "status": "open", "domain": "bcp_drm", "fcaArea": "operational_resilience", "lod": "second_line",
+          "cosoComponents": ["risk_assessment"],
+          "riskCategories": ["operasional", "strategis"],
+          "createdDate": "2024-12-10",
+          "condition": "RTO/RPO untuk 12 sistem kritis belum di-define formal. BIA terakhir 2020.",
+          "criteria": "ISO 22301:2019 Klausul 8.2.2",
+          "cause": "BIA dianggap one-time exercise. Tidak ada governance forum untuk update BIA periodik.",
+          "effect": "Recovery prioritization tidak jelas. Risiko salah prioritas pemulihan.",
+          "recommendation": "Refresh BIA 60 hari. Definisikan RTO/RPO formal per sistem kritis. Annual BIA review.",
+          "managementResponse": "Setuju. BIA workshop dijadwalkan Januari 2025.",
+          "targetDate": "2025-04-30",
+          "pic": "Direktur Risiko"
+        }
+      ],
+      "fraudIndicators": [
+        { "id": "FI-005-1", "title": "BCP Tidak Diuji 30+ Bulan", "description": "Recovery capability unverified", "scheme": "Control gap", "severity": "high", "likelihood": 5, "impact": 5, "hasMitigation": false, "acfeCategory": "it_cyber" },
+        { "id": "FI-005-2", "title": "DR Site Cold Standby Belum Diaktifkan", "description": "Risiko aktivasi DR tidak terbukti", "scheme": "Control gap", "severity": "high", "likelihood": 4, "impact": 5, "hasMitigation": false, "acfeCategory": "it_cyber" }
+      ],
+      "observations": [
+        { "id": "O501", "title": "47 Pegawai Baru Tanpa BCP Training Sejak 2022", "notes": "Knowledge gap signifikan terhadap incident response procedure." }
+      ],
+      "auditTimeline": [
+        { "date": "2024-09-01", "event": "Entry Meeting", "type": "meeting" },
+        { "date": "2024-12-12", "event": "LHA Final", "type": "milestone" }
+      ]
+    },
+    {
+      "number": "006/LHA/AI/06/2025",
+      "title": "Audit Implementasi Sistem Manajemen Keamanan Informasi (SMKI) ISO 27001:2022",
+      "date": "2025-06-10",
+      "period": "Januari 2024 - Mei 2025",
+      "rating": "cukup_efektif",
+      "organization": "PT Mitra Sejahtera Nusantara — Mockup",
+      "unit": "Bidang Teknologi Informasi",
+      "objective": "Menilai implementasi SMKI sesuai standar ISO 27001:2022 untuk aplikasi inti dan core system",
+      "scope": "ISMS, Threat Intelligence, SOP IT, Vendor Management, Physical Security",
+      "team": [
+        { "role": "Penanggung Jawab", "name": "Drs. Ahmad Fauzan, M.Ak., CIA, CRMA" },
+        { "role": "Ketua Tim", "name": "Budi Santoso, S.Kom., M.M., QIA, CISA" }
+      ],
+      "cosoAssessment": {
+        "control_environment": { "rating": "memadai", "notes": "Komitmen TI terhadap SMKI baik." },
+        "risk_assessment": { "rating": "perlu_perbaikan", "notes": "Risk register SMKI belum lengkap." },
+        "control_activities": { "rating": "perlu_perbaikan", "notes": "19 SOP belum disahkan. Validasi di-luar sistem." },
+        "info_communication": { "rating": "perlu_perbaikan", "notes": "Threat intelligence laporan belum tersedia." },
+        "monitoring": { "rating": "perlu_perbaikan", "notes": "Vendor monitoring belum dilakukan." }
+      },
+      "findings": [
+        {
+          "id": "F006-1",
+          "title": "Validasi Checker dan Approval pada Aplikasi Inti Masih Dilakukan di Luar Sistem",
+          "rating": "medium", "status": "in_progress", "domain": "it_security", "fcaArea": "operational_resilience", "lod": "first_line",
+          "cosoComponents": ["control_activities", "info_communication"],
+          "riskCategories": ["operasional", "kepatuhan"],
+          "createdDate": "2025-06-05",
+          "condition": "Reviu workflow: validasi checker dan approver via email/spreadsheet di luar aplikasi inti. Tidak ada audit trail digital.",
+          "criteria": "ISO/IEC 27001:2022 Annex 5.15; COSO 2013 Principle 10",
+          "cause": "User belum sepenuhnya pakai workflow aplikasi. Belum ada SOP wajib e-approval.",
+          "effect": "Audit trail tidak reliable. Risiko unauthorized approval. Pelanggaran SoD.",
+          "recommendation": "Aktifkan workflow checker/approver 60 hari. SOP wajib e-approval. Disable bypass manual >Rp500jt.",
+          "managementResponse": "Setuju. Bidang TI berkomitmen aktivasi workflow Q3 2025.",
+          "targetDate": "2025-09-30",
+          "pic": "Direktur TI"
+        },
+        {
+          "id": "F006-2",
+          "title": "19 SOP terkait SMKI Belum Disahkan",
+          "rating": "medium", "status": "open", "domain": "it_security", "fcaArea": "operational_resilience", "lod": "first_line",
+          "cosoComponents": ["control_activities"],
+          "riskCategories": ["kepatuhan", "operasional"],
+          "createdDate": "2025-06-05",
+          "condition": "19 SOP berkaitan SMKI belum disahkan: SOP Monitoring Keamanan Informasi, SOP Manajemen Cloud, SOP Penghapusan Informasi, SOP Pengelolaan Aset Digital, dst.",
+          "criteria": "ISO/IEC 27001:2022 Annex 5.1",
+          "cause": "Proses sirkular pengesahan panjang. Reviu mendalam pimpinan untuk kesesuaian SOP.",
+          "effect": "Kebijakan keamanan informasi belum terkomunikasi formal. Risiko inkonsistensi praktik.",
+          "recommendation": "Set deadline pengesahan 19 SOP sebelum audit eksternal SMKI. SOP working group. Reviu setiap 12 bulan.",
+          "managementResponse": "Berkomitmen mengawal pengesahan 19 SOP sebelum eksternal audit.",
+          "targetDate": "2025-08-31",
+          "pic": "Direktur TI"
+        },
+        {
+          "id": "F006-3",
+          "title": "Monitoring & Evaluasi Vendor Aplikasi dan Data Center Belum Dilakukan",
+          "rating": "medium", "status": "open", "domain": "it_security", "fcaArea": "operational_resilience", "lod": "first_line",
+          "cosoComponents": ["monitoring"],
+          "riskCategories": ["operasional", "kepatuhan"],
+          "createdDate": "2025-06-05",
+          "condition": "Pengguna jasa belum melengkapi formulir evaluasi vendor di Aplikasi iProc untuk aplikasi maupun data center.",
+          "criteria": "ISO/IEC 27001:2022 Annex 5.22",
+          "cause": "Belum ada KPI vendor management. Awareness rendah.",
+          "effect": "Kualitas vendor tidak ter-monitor. Risiko vendor lock-in.",
+          "recommendation": "SLA evaluasi vendor max 30 hari. Otomasi reminder iProc. Penalti finansial vendor underperform.",
+          "managementResponse": "Setuju. Bidang TI berkomitmen melengkapi evaluasi via iProc.",
+          "targetDate": "2025-07-31",
+          "pic": "Direktur TI"
+        }
+      ],
+      "fraudIndicators": [
+        { "id": "FI-006-1", "title": "Validasi di Luar Sistem (Bypass)", "description": "Approval workflow di-bypass via email/spreadsheet", "scheme": "Bypass control", "severity": "high", "likelihood": 4, "impact": 3, "hasMitigation": false, "acfeCategory": "it_cyber" },
+        { "id": "FI-006-2", "title": "19 SOP SMKI Belum Disahkan", "description": "Kebijakan formal belum diterbitkan", "scheme": "Compliance gap", "severity": "medium", "likelihood": 3, "impact": 3, "hasMitigation": false, "acfeCategory": "compliance_regulatory" },
+        { "id": "FI-006-3", "title": "Vendor Performance Tidak Ter-track", "description": "Monitoring vendor IT belum dilakukan", "scheme": "Monitoring gap", "severity": "medium", "likelihood": 3, "impact": 3, "hasMitigation": false, "acfeCategory": "it_cyber" }
+      ],
+      "observations": [
+        { "id": "O601", "title": "Threat Intelligence Laporan Belum Tersedia", "notes": "Last laporan 2024 — perlu semesteran." },
+        { "id": "O602", "title": "Kunci Ruangan Jaringan Bukan PIC Penanggung Jawab", "notes": "Awareness training perlu refresh ke seluruh personel." }
+      ],
+      "auditTimeline": [
+        { "date": "2025-05-09", "event": "Surat Tugas Diterbitkan", "type": "milestone" },
+        { "date": "2025-05-14", "event": "Entry Meeting", "type": "meeting" },
+        { "date": "2025-06-10", "event": "LHA Final Diterbitkan", "type": "milestone" }
       ]
     }
   ]
