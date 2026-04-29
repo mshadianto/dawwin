@@ -1,26 +1,60 @@
+import { AI_PROVIDERS } from "../constants";
+
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://wgbtsdrgjlmakjoxvvbv.supabase.co";
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndnYnRzZHJnamxtYWtqb3h2dmJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NjI1MTUsImV4cCI6MjA4OTAzODUxNX0.5sAVIDHPN8HeRRzXfhCa7V5nQ7uIL1ZmnwwwwobY8PI";
 
-export async function callAI(prompt) {
+async function callSupabaseProxy(prompt) {
   const response = await fetch(`${SUPABASE_URL}/functions/v1/ai-proxy`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
     },
-    body: JSON.stringify({
-      prompt,
-      model: "llama-3.3-70b-versatile",
-      max_tokens: 1000,
-    }),
+    body: JSON.stringify({ prompt, model: "llama-3.3-70b-versatile", max_tokens: 1500 }),
   });
-
   if (!response.ok) {
     const err = await response.text().catch(() => "");
     throw new Error(`API ${response.status}: ${err.slice(0, 200)}`);
   }
-
   const data = await response.json();
   if (data.error) throw new Error(data.error);
   return (data.text || "").trim();
+}
+
+async function callDirect(provider, aiConfig, prompt) {
+  const endpoint = aiConfig.provider === "custom" ? (aiConfig.customEndpoint || provider.endpoint) : provider.endpoint;
+  const model = aiConfig.provider === "custom" ? (aiConfig.customModel || provider.model) : provider.model;
+  if (!endpoint || !model) throw new Error("Endpoint atau model belum dikonfigurasi.");
+
+  if (aiConfig.provider === "claude") {
+    const r = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ model, max_tokens: 1500, messages: [{ role: "user", content: prompt }] }),
+    });
+    const d = await r.json();
+    if (d.error) throw new Error(d.error.message);
+    return (d.content || []).map(b => b.type === "text" ? b.text : "").join("").trim();
+  }
+
+  if (!aiConfig.apiKey) throw new Error("API Key belum diisi. Buka tab AI Settings.");
+  const r = await fetch(endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${aiConfig.apiKey}` },
+    body: JSON.stringify({ model, max_tokens: 1500, temperature: 0.3, messages: [{ role: "user", content: prompt }] }),
+  });
+  const d = await r.json();
+  if (d.error) throw new Error(d.error.message || JSON.stringify(d.error));
+  const text = (d.choices?.[0]?.message?.content || "").trim();
+  if (!text) throw new Error("AI tidak mengembalikan respons.");
+  return text;
+}
+
+export async function callAI(prompt, aiConfig) {
+  if (!aiConfig || aiConfig.provider === "supabase") {
+    return callSupabaseProxy(prompt);
+  }
+  const provider = AI_PROVIDERS[aiConfig.provider];
+  if (!provider) return callSupabaseProxy(prompt);
+  return callDirect(provider, aiConfig, prompt);
 }

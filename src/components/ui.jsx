@@ -31,21 +31,26 @@ export function Card({ children, style, onClick, className = "" }) {
   );
 }
 
-export function SectionHeader({ icon, title, subtitle, tag }) {
+export function SectionHeader({ icon, title, subtitle, tag, action }) {
   return (
-    <div style={{ marginBottom: 24, paddingBottom: 16, borderBottom: "2px solid #0F172A" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <h2 style={{ fontSize: 22, fontWeight: 800, color: "#0F172A", margin: 0, fontFamily: "'Source Serif 4', Georgia, serif", letterSpacing: -0.5 }}>
-          {title}
-        </h2>
-        {tag && <Badge bg="#0F172A" color="#fff">{tag}</Badge>}
+    <div style={{ marginBottom: 24, paddingBottom: 16, borderBottom: "2px solid #0F172A", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+      <div style={{ flex: 1 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          {icon && <span style={{ fontSize: 22, lineHeight: 1 }}>{icon}</span>}
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: "#0F172A", margin: 0, fontFamily: "'Source Serif 4', Georgia, serif", letterSpacing: -0.5 }}>
+            {title}
+          </h2>
+          {tag && <Badge bg="#0F172A" color="#fff">{tag}</Badge>}
+        </div>
+        {subtitle && <p style={{ fontSize: 13, color: "#64748B", margin: "6px 0 0 0", fontWeight: 400, lineHeight: 1.5 }}>{subtitle}</p>}
       </div>
-      {subtitle && <p style={{ fontSize: 13, color: "#64748B", margin: "6px 0 0 0", fontWeight: 400, lineHeight: 1.5 }}>{subtitle}</p>}
+      {action && <div>{action}</div>}
     </div>
   );
 }
 
-export function StatCard({ icon, value, label, accent, delta, sublabel }) {
+export function StatCard({ icon, value, label, accent, delta, sublabel, sub }) {
+  const subText = sublabel ?? sub;
   return (
     <div className="fade-in" style={{
       background: "#fff",
@@ -60,7 +65,7 @@ export function StatCard({ icon, value, label, accent, delta, sublabel }) {
         <div>
           <div style={{ fontSize: 11, fontWeight: 600, color: "#64748B", letterSpacing: 1, textTransform: "uppercase", marginBottom: 8, fontFamily: "'JetBrains Mono', monospace" }}>{label}</div>
           <div style={{ fontSize: 32, fontWeight: 800, color: "#0F172A", fontFamily: "'Source Serif 4', Georgia, serif", lineHeight: 1, letterSpacing: -1 }}>{value}</div>
-          {sublabel && <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 4, fontWeight: 500 }}>{sublabel}</div>}
+          {subText && <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 4, fontWeight: 500 }}>{subText}</div>}
         </div>
         {delta !== undefined && (
           <div style={{
@@ -212,21 +217,21 @@ export function MaturityIndicator({ level, maxLevel = 5 }) {
 
 export function TextArea({ value, onChange, placeholder, rows = 4 }) {
   return (
-    <textarea value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} rows={rows}
+    <textarea value={value || ""} onChange={e => onChange(e.target.value)} placeholder={placeholder} rows={rows}
       style={{ width: "100%", padding: "10px 12px", borderRadius: 3, border: "1px solid #D1D5DB", fontSize: 13, fontFamily: "'DM Sans', sans-serif", resize: "vertical", lineHeight: 1.6, boxSizing: "border-box", background: "#FAFBFC" }} />
   );
 }
 
 export function Input({ value, onChange, placeholder, type = "text", style: s }) {
   return (
-    <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder}
+    <input type={type} value={value || ""} onChange={e => onChange(e.target.value)} placeholder={placeholder}
       style={{ width: "100%", padding: "8px 12px", borderRadius: 3, border: "1px solid #D1D5DB", fontSize: 13, fontFamily: "'DM Sans', sans-serif", boxSizing: "border-box", background: "#FAFBFC", ...s }} />
   );
 }
 
 export function Select({ value, onChange, options }) {
   return (
-    <select value={value} onChange={e => onChange(e.target.value)}
+    <select value={value || ""} onChange={e => onChange(e.target.value)}
       style={{ width: "100%", padding: "8px 12px", borderRadius: 3, border: "1px solid #D1D5DB", fontSize: 13, fontFamily: "'DM Sans', sans-serif", background: "#FAFBFC", boxSizing: "border-box" }}>
       {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
     </select>

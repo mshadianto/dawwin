@@ -43,11 +43,20 @@ function PreviewBox({ field, text, label, onApply, onAppend, onDismiss }) {
   );
 }
 
-export default function AIAnalysisPanel({ editing, updateFinding }) {
+export default function AIAnalysisPanel({ editing, updateFinding, aiConfig }) {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiTarget, setAiTarget] = useState(null);
   const [aiError, setAiError] = useState(null);
   const [aiPreview, setAiPreview] = useState(null);
+
+  const providerName = aiConfig?.provider
+    ? aiConfig.provider === "supabase" ? "Supabase ai-proxy"
+      : aiConfig.provider === "groq" ? "Groq · Llama 3.3 70B"
+      : aiConfig.provider === "zai" ? "z.ai · GLM-4 Plus"
+      : aiConfig.provider === "claude" ? "Claude Sonnet"
+      : aiConfig.provider === "custom" ? "Custom Endpoint"
+      : aiConfig.provider
+    : "Supabase ai-proxy (default)";
 
   const callAI = async (target) => {
     if (!editing.condition && !editing.criteria) {
@@ -60,7 +69,7 @@ export default function AIAnalysisPanel({ editing, updateFinding }) {
     setAiPreview(null);
 
     try {
-      const text = await fetchAI(buildPrompt(target, editing));
+      const text = await fetchAI(buildPrompt(target, editing), aiConfig);
 
       if (target === "all") {
         let parsed;
@@ -110,7 +119,7 @@ export default function AIAnalysisPanel({ editing, updateFinding }) {
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
           <span style={{ fontSize: 18 }}>🤖</span>
           <span style={{ color: "#E9D5FF", fontSize: 14, fontWeight: 800, fontFamily: "'DM Sans', sans-serif" }}>AI-Powered Audit Analysis</span>
-          <span style={{ color: "#A78BFA", fontSize: 11, fontWeight: 500 }}>— Groq LLaMA 3.3</span>
+          <span style={{ background: "rgba(139,92,246,0.3)", padding: "2px 8px", borderRadius: 10, color: "#C4B5FD", fontSize: 10, fontWeight: 700 }}>{providerName}</span>
         </div>
         <div style={{ fontSize: 12, color: "#C4B5FD", marginBottom: 12, lineHeight: 1.5 }}>
           Isi <strong style={{ color: "#E9D5FF" }}>Kondisi</strong> dan <strong style={{ color: "#E9D5FF" }}>Kriteria</strong> terlebih dahulu, lalu klik tombol di bawah untuk generate analisis berbasis COSO & IIA Standards.

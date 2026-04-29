@@ -7,6 +7,9 @@ import COSOTab from "./tabs/COSOTab";
 import FindingsTab from "./tabs/FindingsTab";
 import ObservationsTab from "./tabs/ObservationsTab";
 import ActionPlanTab from "./tabs/ActionPlanTab";
+import TimelineTab from "./tabs/TimelineTab";
+import ReportTab from "./tabs/ReportTab";
+import AISettingsTab from "./tabs/AISettingsTab";
 import AnalyticsTab from "./tabs/AnalyticsTab";
 import RiskTab from "./tabs/RiskTab";
 import FraudTab from "./tabs/FraudTab";
@@ -25,6 +28,9 @@ const TAB_COMPONENTS = {
   findings: FindingsTab,
   observations: ObservationsTab,
   actionplan: ActionPlanTab,
+  timeline: TimelineTab,
+  report: ReportTab,
+  aisettings: AISettingsTab,
   analytics: AnalyticsTab,
   risk: RiskTab,
   fraud: FraudTab,
