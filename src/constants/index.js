@@ -81,6 +81,8 @@ export const DOMAIN_LABELS = {
   asset_management: "Manajemen Aset",
   aml_compliance: "AML/CFT",
   governance: "Tata Kelola",
+  operations: "Operasional",
+  hr: "SDM",
 };
 
 export const TIMELINE_TYPES = {

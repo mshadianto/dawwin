@@ -65,9 +65,50 @@ const SEVERITY_TO_LI = {
   low: { likelihood: 2, impact: 2 },
 };
 
-export function adaptLhaParsedToCrossLha(reports) {
-  if (!Array.isArray(reports)) return [];
-  return reports.map((r, ri) => {
+function isRichLha(item) {
+  // Rich shape: top-level has number/title/findings with id+rating
+  return item && item.number && Array.isArray(item.findings)
+    && item.findings.length > 0 && item.findings[0].id && item.findings[0].rating;
+}
+
+function passThroughRichLha(lha) {
+  // Rich shape already matches the cross-LHA expected schema; only ensure fraudIndicators present
+  const fraudIndicators = (lha.fraudIndicators || []).map((fi, idx) => {
+    const li = fi.likelihood && fi.impact
+      ? { likelihood: fi.likelihood, impact: fi.impact }
+      : SEVERITY_TO_LI[fi.severity] || SEVERITY_TO_LI.medium;
+    return {
+      id: fi.id || `${lha.number}-FI${String(idx + 1).padStart(2, "0")}`,
+      title: fi.title || fi.keyword || fi.category || "Fraud indicator",
+      description: fi.description || fi.text || fi.context || "",
+      scheme: fi.scheme || fi.category || "",
+      severity: fi.severity,
+      likelihood: li.likelihood,
+      impact: li.impact,
+      page: fi.page,
+      hasMitigation: fi.hasMitigation ?? !!fi.mitigation,
+      mitigation: fi.mitigation || "",
+      acfeCategory: fi.acfeCategory,
+      fraudTriangle: fi.fraudTriangle,
+    };
+  });
+  return { ...lha, fraudIndicators };
+}
+
+export function adaptLhaParsedToCrossLha(input) {
+  if (!input) return [];
+  // Accept array, or {reports: [...]} (legacy), or {lhas: [...]} (rich)
+  const items = Array.isArray(input) ? input : (input.lhas || input.reports || []);
+  if (!Array.isArray(items)) return [];
+
+  return items.map((r, ri) => {
+    if (isRichLha(r)) return passThroughRichLha(r);
+    // Legacy raw shape: infer fields from text
+    return adaptRawReport(r, ri);
+  });
+}
+
+function adaptRawReport(r, ri) {
     const rawFraud = r.fraud_indicators || [];
     const findings = (r.findings || []).map((f, fi) => {
       const domain = inferDomain(`${f.title || ""} ${f.condition || ""} ${r.metadata?.title || ""}`);
@@ -114,5 +155,4 @@ export function adaptLhaParsedToCrossLha(reports) {
       date: r.metadata?.date || "",
       findings,
     };
-  });
 }

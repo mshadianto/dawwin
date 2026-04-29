@@ -230,7 +230,7 @@ function SourceAwareLHALayer() {
 
 export default function AuditDocApp() {
   const { data: lhaRaw } = useLHAData();
-  const jsonLhas = useMemo(() => adaptLhaParsedToCrossLha(lhaRaw?.reports), [lhaRaw]);
+  const jsonLhas = useMemo(() => adaptLhaParsedToCrossLha(lhaRaw), [lhaRaw]);
 
   return (
     <DataSourceProvider jsonLhas={jsonLhas}>
