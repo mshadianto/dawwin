@@ -1,6 +1,7 @@
 export const STORAGE_KEY = "audit-doc-data";
 
 export const TABS = [
+  { id: "committee", icon: "\u{1F3DB}️", label: "Komite Audit" },
   { id: "dashboard", icon: "\u{1F4CA}", label: "Dashboard" },
   { id: "info", icon: "\u{1F4D1}", label: "Info Audit" },
   { id: "coso", icon: "\u{1F3DB}️", label: "COSO" },
