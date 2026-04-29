@@ -12,6 +12,7 @@ export const TABS = [
   { id: "aisettings", icon: "⚙️", label: "AI Settings" },
   { id: "divider-lha", divider: true, label: "LHA Analytics" },
   { id: "crosslha", icon: "\u{1F310}", label: "Cross-LHA" },
+  { id: "compare", icon: "\u{1F500}", label: "LHA Compare" },
   { id: "analytics", icon: "\u{1F4C8}", label: "Analytics" },
   { id: "risk", icon: "\u{1F6E1}️", label: "Risk Mgmt" },
   { id: "fraud", icon: "\u{1F575}️", label: "Fraud Detection" },

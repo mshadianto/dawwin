@@ -1,6 +1,11 @@
+import { useMemo } from "react";
 import { TABS, STORAGE_KEY } from "./constants";
 import DEFAULT_STATE from "./constants/defaultState";
 import { usePersistedState } from "./hooks/usePersistedState";
+import { useLHAData } from "./hooks/useLHAData";
+import { LHAProvider } from "./contexts/LHAContext";
+import { adaptLhaParsedToCrossLha } from "./utils/lhaAdapter";
+import LHASelector from "./components/LHASelector";
 import Dashboard from "./tabs/Dashboard";
 import AuditInfoTab from "./tabs/AuditInfoTab";
 import COSOTab from "./tabs/COSOTab";
@@ -11,6 +16,7 @@ import TimelineTab from "./tabs/TimelineTab";
 import ReportTab from "./tabs/ReportTab";
 import AISettingsTab from "./tabs/AISettingsTab";
 import CrossLhaWrapper from "./tabs/CrossLhaWrapper";
+import LHACompareTab from "./tabs/LHACompareTab";
 import AnalyticsTab from "./tabs/AnalyticsTab";
 import RiskTab from "./tabs/RiskTab";
 import FraudTab from "./tabs/FraudTab";
@@ -33,6 +39,7 @@ const TAB_COMPONENTS = {
   report: ReportTab,
   aisettings: AISettingsTab,
   crosslha: CrossLhaWrapper,
+  compare: LHACompareTab,
   analytics: AnalyticsTab,
   risk: RiskTab,
   fraud: FraudTab,
@@ -45,7 +52,9 @@ const TAB_COMPONENTS = {
   copilot: DataCopilotChat,
 };
 
-export default function AuditDocApp() {
+const LHA_TAB_IDS = ["crosslha", "compare", "analytics", "risk", "fraud", "iso31000", "roi", "xai", "drift", "mlpipeline", "autofe", "copilot"];
+
+function MainShell() {
   const { data, setData, saving } = usePersistedState(STORAGE_KEY, DEFAULT_STATE);
 
   const resetData = () => {
@@ -65,7 +74,7 @@ export default function AuditDocApp() {
   };
 
   const ActiveTab = TAB_COMPONENTS[data.activeTab] || Dashboard;
-  const isLHATab = ["crosslha", "analytics", "risk", "fraud", "iso31000", "roi", "xai", "drift", "mlpipeline", "autofe", "copilot"].includes(data.activeTab);
+  const isLHATab = LHA_TAB_IDS.includes(data.activeTab);
 
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif", background: "#F8F9FB", minHeight: "100vh", display: "flex" }}>
@@ -76,7 +85,7 @@ export default function AuditDocApp() {
         borderRight: "1px solid #1E293B",
       }}>
         {/* Brand Header */}
-        <div style={{ padding: "24px 20px 20px", borderBottom: "1px solid #1E293B" }}>
+        <div style={{ padding: "24px 20px 16px", borderBottom: "1px solid #1E293B" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{
               width: 36, height: 36, borderRadius: 3,
@@ -91,6 +100,11 @@ export default function AuditDocApp() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* LHA Selector */}
+        <div style={{ padding: "12px 0", borderBottom: "1px solid #1E293B" }}>
+          <LHASelector />
         </div>
 
         {/* Navigation */}
@@ -193,5 +207,16 @@ export default function AuditDocApp() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AuditDocApp() {
+  const { data: lhaRaw } = useLHAData();
+  const lhas = useMemo(() => adaptLhaParsedToCrossLha(lhaRaw?.reports), [lhaRaw]);
+
+  return (
+    <LHAProvider lhas={lhas}>
+      <MainShell />
+    </LHAProvider>
   );
 }
