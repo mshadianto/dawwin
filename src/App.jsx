@@ -20,6 +20,8 @@ import CrossLhaWrapper from "./tabs/CrossLhaWrapper";
 import LHACompareTab from "./tabs/LHACompareTab";
 import FraudHeatmapTab from "./tabs/FraudHeatmapTab";
 import DataSourceTab from "./tabs/DataSourceTab";
+import AuditUniverseTab from "./tabs/AuditUniverseTab";
+import AuditPlanTab from "./tabs/AuditPlanTab";
 import AnalyticsTab from "./tabs/AnalyticsTab";
 import RiskTab from "./tabs/RiskTab";
 import FraudTab from "./tabs/FraudTab";
@@ -45,6 +47,8 @@ const TAB_COMPONENTS = {
   compare: LHACompareTab,
   fraud_heatmap: FraudHeatmapTab,
   data_source: DataSourceTab,
+  audit_universe: AuditUniverseTab,
+  audit_plan: AuditPlanTab,
   analytics: AnalyticsTab,
   risk: RiskTab,
   fraud: FraudTab,
@@ -57,7 +61,7 @@ const TAB_COMPONENTS = {
   copilot: DataCopilotChat,
 };
 
-const LHA_TAB_IDS = ["crosslha", "compare", "fraud_heatmap", "data_source", "analytics", "risk", "fraud", "iso31000", "roi", "xai", "drift", "mlpipeline", "autofe", "copilot"];
+const LHA_TAB_IDS = ["crosslha", "compare", "fraud_heatmap", "data_source", "audit_universe", "audit_plan", "analytics", "risk", "fraud", "iso31000", "roi", "xai", "drift", "mlpipeline", "autofe", "copilot"];
 
 function MainShell() {
   const { data, setData, saving } = usePersistedState(STORAGE_KEY, DEFAULT_STATE);
