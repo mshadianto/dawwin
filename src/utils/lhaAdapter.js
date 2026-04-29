@@ -58,14 +58,21 @@ function inferStatus(finding) {
   return "open";
 }
 
+// severity → (likelihood, impact) mapping for fraud heatmap 5x5 placement
+const SEVERITY_TO_LI = {
+  high: { likelihood: 4, impact: 4 },
+  medium: { likelihood: 3, impact: 3 },
+  low: { likelihood: 2, impact: 2 },
+};
+
 export function adaptLhaParsedToCrossLha(reports) {
   if (!Array.isArray(reports)) return [];
   return reports.map((r, ri) => {
-    const fraudIndicators = r.fraud_indicators || [];
+    const rawFraud = r.fraud_indicators || [];
     const findings = (r.findings || []).map((f, fi) => {
       const domain = inferDomain(`${f.title || ""} ${f.condition || ""} ${r.metadata?.title || ""}`);
       const cosoComponents = inferCosoComponents(`${f.title || ""} ${f.condition || ""} ${f.criteria || ""}`);
-      const rating = inferRating(f, fraudIndicators);
+      const rating = inferRating(f, rawFraud);
       const status = inferStatus(f);
       return {
         id: `R${ri + 1}F${String(fi + 1).padStart(2, "0")}`,
@@ -85,7 +92,23 @@ export function adaptLhaParsedToCrossLha(reports) {
       };
     });
 
+    const fraudIndicators = rawFraud.map((fi, idx) => {
+      const li = SEVERITY_TO_LI[fi.severity] || SEVERITY_TO_LI.medium;
+      return {
+        id: `R${ri + 1}FI${String(idx + 1).padStart(2, "0")}`,
+        title: fi.keyword || fi.text || fi.category || "Fraud indicator",
+        description: fi.text || fi.context || "",
+        scheme: fi.category || "",
+        severity: fi.severity,
+        likelihood: li.likelihood,
+        impact: li.impact,
+        page: fi.page,
+        hasMitigation: false,
+      };
+    });
+
     return {
+      fraudIndicators,
       number: r.metadata?.number || `LHA-${ri + 1}`,
       title: r.metadata?.title || r.source_file || `Audit ${ri + 1}`,
       date: r.metadata?.date || "",
