@@ -133,7 +133,7 @@ const DUMMY_FINDINGS = [
     riskCategories: ["kepatuhan", "reputasi"],
     domain: "governance",
     condition: "Reviu atas implementasi CoI policy:\n1) Policy ada (No.POL-GCG-003/2021) namun belum di-update sejak 2021\n2) Annual disclosure form hanya diisi 67% pegawai (target: 100%)\n3) Tidak ada digital tracking untuk disclosure\n4) Tidak ada CoI committee untuk evaluasi disclosure yang material\n5) Sample 30 disclosure: 12 (40%) form tidak lengkap atau hanya tanda tangan tanpa pengisian substantif",
-    criteria: "PBPKH atau peraturan internal tentang Kode Etik & GCG; KNKG GCG Guidelines; ISO 37001 (untuk anti-bribery aspect)",
+    criteria: "Peraturan internal Perusahaan tentang Kode Etik & GCG (POL-GCG-003/2021); KNKG GCG Guidelines; ISO 37001 (anti-bribery management system)",
     cause: "1) Awareness yang rendah — pegawai menganggap formalitas\n2) Form disclosure manual paper-based\n3) Tidak ada sanksi untuk non-disclosure\n4) Tone-at-the-top kurang konsisten",
     effect: "1) Risiko CoI tidak terdeteksi sehingga keputusan bias\n2) Potensi conflict yang berdampak finansial dan reputasi\n3) Tidak compliant dengan best practice GCG",
     recommendation: "1) Update CoI policy dengan kategorisasi tegas (definite, perceived, potential)\n2) Implementasi digital CoI disclosure platform dengan annual reminder\n3) Bentuk CoI Committee (3 anggota independent)\n4) Lakukan CoI awareness training (mandatory e-learning)\n5) Tetapkan sanksi formal untuk non-disclosure\n6) Reporting CoI dashboard ke Komite Audit quarterly",

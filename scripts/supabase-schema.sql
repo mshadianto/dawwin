@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS lha_reports (
   number TEXT,
   date TEXT,
   unit TEXT,
-  org TEXT DEFAULT 'BPKH',
+  org TEXT DEFAULT 'PT Mitra Sejahtera Nusantara — Mockup',
   total_pages INTEGER DEFAULT 0,
   total_texts INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT now()

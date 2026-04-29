@@ -30,7 +30,7 @@ async function seed() {
         number: report.metadata.number || null,
         date: report.metadata.date || null,
         unit: report.metadata.unit || null,
-        org: report.metadata.org || "BPKH",
+        org: report.metadata.org || "PT Mitra Sejahtera Nusantara — Mockup",
         total_pages: report.metadata.total_pages || 0,
         total_texts: report.metadata.total_texts || 0,
       })

@@ -31,7 +31,7 @@ def extract_texts(doc):
 
 def extract_metadata(texts):
     """Extract document metadata from first ~50 texts."""
-    meta = {"title": "", "number": "", "date": "", "unit": "", "org": "BPKH"}
+    meta = {"title": "", "number": "", "date": "", "unit": "", "org": "PT Mitra Sejahtera Nusantara — Mockup"}
     joined = " ".join(t["text"] for t in texts[:50])
 
     # Number pattern: XX/LHA/AI/MM/YYYY

@@ -68,7 +68,7 @@ export default function ISO31000Tab() {
     const regulations = new Set();
     allFindings.forEach(f => {
       const text = f.criteria || "";
-      const matches = text.match(/(?:Peraturan|PBPKH|UU|PP|PMK|PBI|POJK|SOP|Keputusan|No\.\s*\d+)[^,;.\n]*/gi);
+      const matches = text.match(/(?:Peraturan|UU|PP|PMK|PBI|POJK|SOP|ISO|COSO|Keputusan|No\.\s*\d+)[^,;.\n]*/gi);
       if (matches) matches.forEach(m => regulations.add(m.trim().slice(0, 80)));
     });
 
