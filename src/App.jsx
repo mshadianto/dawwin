@@ -4,6 +4,7 @@ import DEFAULT_STATE from "./constants/defaultState";
 import { usePersistedState } from "./hooks/usePersistedState";
 import { useLHAData } from "./hooks/useLHAData";
 import { LHAProvider } from "./contexts/LHAContext";
+import { DataSourceProvider, useActiveData } from "./contexts/DataSourceContext";
 import { adaptLhaParsedToCrossLha } from "./utils/lhaAdapter";
 import LHASelector from "./components/LHASelector";
 import Dashboard from "./tabs/Dashboard";
@@ -18,6 +19,7 @@ import AISettingsTab from "./tabs/AISettingsTab";
 import CrossLhaWrapper from "./tabs/CrossLhaWrapper";
 import LHACompareTab from "./tabs/LHACompareTab";
 import FraudHeatmapTab from "./tabs/FraudHeatmapTab";
+import DataSourceTab from "./tabs/DataSourceTab";
 import AnalyticsTab from "./tabs/AnalyticsTab";
 import RiskTab from "./tabs/RiskTab";
 import FraudTab from "./tabs/FraudTab";
@@ -42,6 +44,7 @@ const TAB_COMPONENTS = {
   crosslha: CrossLhaWrapper,
   compare: LHACompareTab,
   fraud_heatmap: FraudHeatmapTab,
+  data_source: DataSourceTab,
   analytics: AnalyticsTab,
   risk: RiskTab,
   fraud: FraudTab,
@@ -54,7 +57,7 @@ const TAB_COMPONENTS = {
   copilot: DataCopilotChat,
 };
 
-const LHA_TAB_IDS = ["crosslha", "compare", "fraud_heatmap", "analytics", "risk", "fraud", "iso31000", "roi", "xai", "drift", "mlpipeline", "autofe", "copilot"];
+const LHA_TAB_IDS = ["crosslha", "compare", "fraud_heatmap", "data_source", "analytics", "risk", "fraud", "iso31000", "roi", "xai", "drift", "mlpipeline", "autofe", "copilot"];
 
 function MainShell() {
   const { data, setData, saving } = usePersistedState(STORAGE_KEY, DEFAULT_STATE);
@@ -212,13 +215,22 @@ function MainShell() {
   );
 }
 
-export default function AuditDocApp() {
-  const { data: lhaRaw } = useLHAData();
-  const lhas = useMemo(() => adaptLhaParsedToCrossLha(lhaRaw?.reports), [lhaRaw]);
-
+function SourceAwareLHALayer() {
+  const { lhas } = useActiveData();
   return (
     <LHAProvider lhas={lhas}>
       <MainShell />
     </LHAProvider>
+  );
+}
+
+export default function AuditDocApp() {
+  const { data: lhaRaw } = useLHAData();
+  const jsonLhas = useMemo(() => adaptLhaParsedToCrossLha(lhaRaw?.reports), [lhaRaw]);
+
+  return (
+    <DataSourceProvider jsonLhas={jsonLhas}>
+      <SourceAwareLHALayer />
+    </DataSourceProvider>
   );
 }

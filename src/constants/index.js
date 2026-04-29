@@ -14,6 +14,7 @@ export const TABS = [
   { id: "crosslha", icon: "\u{1F310}", label: "Cross-LHA" },
   { id: "compare", icon: "\u{1F500}", label: "LHA Compare" },
   { id: "fraud_heatmap", icon: "\u{1F3B2}", label: "Fraud Heatmap" },
+  { id: "data_source", icon: "\u{1F50C}", label: "Data Source" },
   { id: "analytics", icon: "\u{1F4C8}", label: "Analytics" },
   { id: "risk", icon: "\u{1F6E1}️", label: "Risk Mgmt" },
   { id: "fraud", icon: "\u{1F575}️", label: "Fraud Detection" },
