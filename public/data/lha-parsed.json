@@ -8,7 +8,7 @@
       "rating": "cukup_efektif",
       "organization": "PT Mitra Sejahtera Nusantara — Mockup",
       "unit": "Bidang Perencanaan Strategis & Operasional",
-      "objective": "Menilai keselarasan Renstra 2022-2027 dengan program/RKAT/IKU BSC, kelengkapan SOP tata laksana, akuntabilitas event korporat, dan kesesuaian SOTK dengan tugas-tugas operasional terkini",
+      "objective": "Menilai keselarasan Strategic Plan 2022-2027 dengan program/RKAT/KPI Balanced Scorecard, kelengkapan SOP tata laksana, akuntabilitas event korporat, dan kesesuaian SOTK dengan tugas-tugas operasional terkini",
       "scope": "Strategic Planning, Program Management, Event Management, SOTK & Job Description",
       "team": [
         { "role": "Penanggung Jawab", "name": "Drs. Ahmad Fauzan, M.Ak., CIA, CRMA" },
@@ -19,15 +19,15 @@
       ],
       "cosoAssessment": {
         "control_environment": { "rating": "perlu_perbaikan", "notes": "SOTK belum mengakomodasi tugas pengelolaan data pelanggan. Job description belum di-update sejak 2022." },
-        "risk_assessment": { "rating": "perlu_perbaikan", "notes": "Linkage Renstra-RKAT-IKU belum systematic. Strategic risks program baru belum di-RCSA." },
+        "risk_assessment": { "rating": "perlu_perbaikan", "notes": "Linkage Strategic Plan–RKAT–KPI belum systematic. Strategic risks program baru belum di-RCSA." },
         "control_activities": { "rating": "perlu_perbaikan", "notes": "SOP fokus administrasi, belum cover tata laksana. Maker-checker dana non-RKAT belum formal." },
         "info_communication": { "rating": "perlu_perbaikan", "notes": "Dana mitra Rp1,25M tidak tercatat. Komunikasi strategi-operasional ad-hoc." },
-        "monitoring": { "rating": "perlu_perbaikan", "notes": "Renstra Annual Review tidak formal. KPI tracking IKU BSC belum established." }
+        "monitoring": { "rating": "perlu_perbaikan", "notes": "Strategic Plan Annual Review tidak formal. KPI tracking KPI Balanced Scorecard belum established." }
       },
       "findings": [
         {
           "id": "F001-1",
-          "title": "Ketidakselarasan Renstra 2022-2027 dengan Program & RKAT — Program Reguler dan Program Berlangganan Belum Tercantum di RKAT",
+          "title": "Ketidakselarasan Strategic Plan 2022-2027 dengan Program & RKAT — Program Reguler dan Program Berlangganan Belum Tercantum di RKAT",
           "rating": "high",
           "status": "open",
           "domain": "governance",
@@ -36,11 +36,11 @@
           "cosoComponents": ["risk_assessment", "info_communication"],
           "riskCategories": ["strategis", "operasional", "kepatuhan"],
           "createdDate": "2024-12-10",
-          "condition": "Reviu atas Renstra 2022-2027 dan dokumen RKAT 2024 menemukan:\n1) Program 'Layanan Reguler' dan 'Program Berlangganan Tahunan' yang merupakan inisiatif strategis dalam Renstra Pasal 12 ayat (3) tidak tercantum dalam RKAT 2024\n2) IKU BSC untuk kedua program tersebut belum di-set, sehingga pencapaian tidak ter-track\n3) Anggaran operasional kedua program di-alokasikan informal melalui reklasifikasi pos lain\n4) Tidak ada Renstra-RKAT-IKU Traceability Matrix yang formal\n5) Sample 18 IKU yang ada: 8 (44%) tidak terkait langsung dengan strategic objective di Renstra",
-          "criteria": "Renstra 2022-2027 Pasal 12 ayat (3); PP No.8/2006 tentang Pelaporan Keuangan & Kinerja; KNKG GCG Guidelines Pasal 3.2 (Akuntabilitas); COSO 2013 Principle 7 (Identifies and Analyzes Risks); IIA Standard 2120 (Risk Management); Balanced Scorecard methodology",
-          "cause": "1) Process flow Renstra → RKAT → IKU belum memiliki systematic linkage matrix\n2) Tim Perencanaan understaffed (rasio 1:8 program, ideal 1:4)\n3) RKAT preparation cycle belum mengintegrasikan strategic review formal\n4) Tidak ada PMO/Strategy Office yang dedicated\n5) Cultural disconnect antara fungsi planning dan operational",
-          "effect": "1) Disconnect strategi-eksekusi → potential underperformance Renstra objectives 30-40%\n2) Risiko anggaran inefisien — alokasi informal Rp2-5 miliar tidak transparent\n3) Pelanggaran prinsip akuntabilitas GCG\n4) Stakeholder confidence menurun\n5) Kompetitif disadvantage",
-          "recommendation": "1) Develop Renstra-RKAT-IKU Traceability Matrix dengan PIC per program (target Q1 2025)\n2) Mandatory inclusion semua program strategis Renstra dalam RKAT — no exception\n3) Establish IKU BSC untuk Program Reguler dan Program Berlangganan dalam 60 hari\n4) Bentuk Strategy Management Office (SMO) atau PMO Function — minimal 2 staf dedicated\n5) Implementasi Quarterly Strategic Review dengan BoD\n6) Update Renstra preparation cycle untuk include strategic-operational integration",
+          "condition": "Reviu atas Strategic Plan 2022-2027 dan dokumen RKAT 2024 menemukan:\n1) Program 'Layanan Reguler' dan 'Program Berlangganan Tahunan' yang merupakan inisiatif strategis dalam Strategic Plan Pasal 12 ayat (3) tidak tercantum dalam RKAT 2024\n2) KPI Balanced Scorecard untuk kedua program tersebut belum di-set, sehingga pencapaian tidak ter-track\n3) Anggaran operasional kedua program di-alokasikan informal melalui reklasifikasi pos lain\n4) Tidak ada Strategic Plan–RKAT–KPI Traceability Matrix yang formal\n5) Sample 18 KPI yang ada: 8 (44%) tidak terkait langsung dengan strategic objective di Strategic Plan",
+          "criteria": "Strategic Plan 2022-2027 Pasal 12 ayat (3); PP No.8/2006 tentang Pelaporan Keuangan & Kinerja; KNKG GCG Guidelines Pasal 3.2 (Akuntabilitas); COSO 2013 Principle 7 (Identifies and Analyzes Risks); IIA Standard 2120 (Risk Management); Balanced Scorecard methodology",
+          "cause": "1) Process flow Strategic Plan → RKAT → KPI belum memiliki systematic linkage matrix\n2) Tim Perencanaan understaffed (rasio 1:8 program, ideal 1:4)\n3) RKAT preparation cycle belum mengintegrasikan strategic review formal\n4) Tidak ada PMO/Strategy Office yang dedicated\n5) Cultural disconnect antara fungsi planning dan operational",
+          "effect": "1) Disconnect strategi-eksekusi → potential underperformance Strategic Plan objectives 30-40%\n2) Risiko anggaran inefisien — alokasi informal Rp2-5 miliar tidak transparent\n3) Pelanggaran prinsip akuntabilitas GCG\n4) Stakeholder confidence menurun\n5) Kompetitif disadvantage",
+          "recommendation": "1) Develop Strategic Plan–RKAT–KPI Traceability Matrix dengan PIC per program (target Q1 2025)\n2) Mandatory inclusion semua program strategis Strategic Plan dalam RKAT — no exception\n3) Establish KPI Balanced Scorecard untuk Program Reguler dan Program Berlangganan dalam 60 hari\n4) Bentuk Strategy Management Office (SMO) atau PMO Function — minimal 2 staf dedicated\n5) Implementasi Quarterly Strategic Review dengan BoD\n6) Update Strategic Plan preparation cycle untuk include strategic-operational integration",
           "managementResponse": "Setuju. Strategy Management Office sudah dimasukkan dalam usulan struktur 2025. Traceability matrix akan dikembangkan dengan support konsultan. Target operasional Q2 2025.",
           "targetDate": "2025-06-30",
           "pic": "Direktur Perencanaan Strategis & Direktur Keuangan"
@@ -56,7 +56,7 @@
           "cosoComponents": ["control_activities", "info_communication"],
           "riskCategories": ["operasional", "kepatuhan"],
           "createdDate": "2024-12-10",
-          "condition": "Pengujian atas 47 SOP yang berlaku:\n1) 38 SOP (81%) hanya mengatur proses administrasi (registrasi, pencatatan, archiving)\n2) Hanya 9 SOP (19%) yang mencakup prosedur tata laksana program\n3) Tidak ada SOP untuk Program Reguler dan Program Berlangganan\n4) SOP event korporat tidak mencakup procurement kerjasama mitra\n5) Last review SOP 2022 — belum di-update sejak Renstra 2022-2027 ditetapkan\n6) Sample 30 transaksi: 11 (37%) dilaksanakan tanpa SOP spesifik",
+          "condition": "Pengujian atas 47 SOP yang berlaku:\n1) 38 SOP (81%) hanya mengatur proses administrasi (registrasi, pencatatan, archiving)\n2) Hanya 9 SOP (19%) yang mencakup prosedur tata laksana program\n3) Tidak ada SOP untuk Program Reguler dan Program Berlangganan\n4) SOP event korporat tidak mencakup procurement kerjasama mitra\n5) Last review SOP 2022 — belum di-update sejak Strategic Plan 2022-2027 ditetapkan\n6) Sample 30 transaksi: 11 (37%) dilaksanakan tanpa SOP spesifik",
           "criteria": "ISO 9001:2015 — Klausul 4.4 (Process Approach); COSO 2013 Principle 12 (Deploys Through Policies and Procedures); Pedoman Internal Pengembangan SOP No.PED-OPS-001/2021; IIA Standard 2210",
           "cause": "1) SOP development capability fokus compliance administratif\n2) Tidak ada SOP Officer atau Process Excellence team dedicated\n3) Belum ada review cycle reguler\n4) Cultural — pegawai tahu by experience tanpa formalisasi\n5) Knowledge transfer tidak ter-formal",
           "effect": "1) Inconsistency dalam pelaksanaan program → hasil tidak repeatable\n2) Risiko operational dari rangkap fungsi atau gap responsibility\n3) Onboarding pegawai baru lebih lambat\n4) Audit trail lemah → temuan auditor eksternal\n5) Knowledge loss saat staf resign",
@@ -107,8 +107,8 @@
         }
       ],
       "observations": [
-        { "id": "O001-1", "title": "Renstra Annual Review Tidak Dilakukan Formal Sejak 2022", "notes": "Disarankan implementasi Quarterly Strategic Review (QSR) dengan BoD untuk monitor execution dan respond ke perubahan environment." },
-        { "id": "O001-2", "title": "IKU BSC Belum Cascade ke Level Individual", "notes": "Sample 12 staf operasional: 8 (67%) tidak memiliki IKU individual. Disarankan BSC cascade end-to-end corporate→unit→individual." },
+        { "id": "O001-1", "title": "Strategic Plan Annual Review Tidak Dilakukan Formal Sejak 2022", "notes": "Disarankan implementasi Quarterly Strategic Review (QSR) dengan BoD untuk monitor execution dan respond ke perubahan environment." },
+        { "id": "O001-2", "title": "KPI Balanced Scorecard Belum Cascade ke Level Individual", "notes": "Sample 12 staf operasional: 8 (67%) tidak memiliki KPI individual. Disarankan BSC cascade end-to-end corporate→unit→individual." },
         { "id": "O001-3", "title": "Strategy-Operations Integration Forum Belum Ada", "notes": "Disarankan monthly Strategy-Operations Review meeting untuk alignment." },
         { "id": "O001-4", "title": "Vendor & Mitra Database Belum Ter-konsolidasi", "notes": "Disarankan develop Master Database dengan tracking conflict of interest dan multi-year relationship analysis." },
         { "id": "O001-5", "title": "Knowledge Management System untuk SOP Belum Mature", "notes": "SOP di-manage via shared folder tanpa version control. Disarankan digital SOP Management System." }
