@@ -3,6 +3,14 @@ import { supabase } from "../lib/supabase";
 
 const BASE = import.meta.env.BASE_URL || "/";
 
+function looksLegacyBpkh(data) {
+  if (!data) return false;
+  try {
+    const haystack = JSON.stringify(data);
+    return /BPKH|Pengelola Keuangan Haji|PBPKH|Keuangan Haji/i.test(haystack);
+  } catch { return false; }
+}
+
 async function fetchFromSupabase() {
   const [reportsRes, findingsRes, fraudRes, riskRes] = await Promise.all([
     supabase.from("lha_reports").select("*").order("created_at"),
@@ -70,23 +78,29 @@ export function useLHAData() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const loadFromJson = () => fetch(`${BASE}data/lha-parsed.json`)
+      .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+      .then(d => { setData(d); setLoading(false); })
+      .catch(e2 => { setError(e2.message); setLoading(false); });
+
     fetchFromSupabase()
       .then(d => {
-        if (d) {
+        if (d && !looksLegacyBpkh(d)) {
           setData(d);
           setLoading(false);
         } else {
-          return fetch(`${BASE}data/lha-parsed.json`)
-            .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
-            .then(d => { setData(d); setLoading(false); });
+          // No data, or stale BPKH-tagged data → purge & fallback to JSON
+          if (d && looksLegacyBpkh(d)) {
+            // Best-effort cleanup of stale Supabase rows
+            supabase.from("lha_reports").delete().neq("id", -1).then(() => {});
+            supabase.from("lha_findings").delete().neq("id", -1).then(() => {});
+            supabase.from("lha_fraud_indicators").delete().neq("id", -1).then(() => {});
+            supabase.from("lha_risk_profiles").delete().neq("id", -1).then(() => {});
+          }
+          return loadFromJson();
         }
       })
-      .catch(() => {
-        fetch(`${BASE}data/lha-parsed.json`)
-          .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
-          .then(d => { setData(d); setLoading(false); })
-          .catch(e2 => { setError(e2.message); setLoading(false); });
-      });
+      .catch(() => loadFromJson());
   }, []);
 
   return { data, loading, error };
