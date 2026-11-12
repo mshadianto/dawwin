@@ -26,7 +26,7 @@ Deployment is automated via GitHub Actions (`.github/workflows/deploy.yml`) on p
 
 ## Auth dan tenant
 
-- `src/auth/AuthContext.jsx` — status `demo | tenant | no_tenant | loading`. `useAuth()` memberi `tenant`, `role`, `canWrite`.
+- `src/auth/AuthContext.jsx` — status `demo | tenant | no_tenant | loading | error`. `useAuth()` memberi `tenant`, `role`, `canWrite`.
 - **Mode demo** (tanpa login): tidak boleh ada panggilan ke tabel Supabase. Data contoh statis + localStorage.
 - **Mode tenant**: `usePersistedState(..., { tenantId, canWrite })` (sinkron dengan cek versi, `src/hooks/documentSync.js`) dan `useLHAData()` (tenant dari sesi). Subtree di-remount lewat `key` saat tenant berubah.
 - Field di `LOCAL_ONLY_FIELDS` (`activeTab`, `aiConfig`) tidak pernah dikirim ke server. Kunci localStorage baru wajib lewat `scopedKey()` dari `src/lib/tenantScope.js`.
@@ -40,7 +40,7 @@ Deployment is automated via GitHub Actions (`.github/workflows/deploy.yml`) on p
 ### Two data domains
 
 1. **Manual audit data** — user-editable fields (audit info, COSO assessment, findings, observations, action plans). Managed via `usePersistedState` hook: localStorage (immediate) + in tenant mode Supabase `audit_documents` (1.5s debounced, only after the initial remote load succeeded).
-2. **LHA analytics data** — read-only parsed audit reports. `useLHAData(tenantId)` reads the tenant's Supabase rows; demo mode and empty tenants use static `public/data/lha-parsed.json`.
+2. **LHA analytics data** — read-only parsed audit reports. `useLHAData()` reads the signed-in tenant's Supabase rows (empty tenants get an empty state, never sample data); demo mode uses static `public/data/lha-parsed.json`.
 
 ### Tab system
 
