@@ -63,3 +63,18 @@ Tabs are defined in `src/constants/index.js` (TABS array) and routed in `App.jsx
 
 - `base: "/dawwin/"` — required for GitHub Pages subpath
 - Dev proxy: `/api/anthropic` → Anthropic API (legacy, unused in production)
+
+## Alur kerja agent (wajib untuk perubahan non-trivial)
+
+Skill ada di `.claude/skills/` (asal dan lisensi: `.claude/THIRD_PARTY_SKILLS.md`).
+
+1. **Klarifikasi** — `/grill-me` sampai semua keputusan terjawab.
+2. **Spec** — `/spec-driven-development`; simpan di `docs/specs/NNN-judul.md`.
+3. **Review independen** — `/egm:egm-review` atas spec (plugin EGM). Reviewer harus sesi baru yang tidak ikut menyusun spec. Tanpa plugin: buka sesi baru, beri hanya file spec, minta dicari kelemahannya.
+4. **Implementasi** — `/tdd`, satu irisan vertikal per commit. Bug: `/diagnosing-bugs`.
+5. **Review kode** — `/code-review-and-quality`; apa pun yang menyentuh auth, RLS, Edge Function, atau `backend/` juga lewat `/security-and-hardening`.
+6. **Rilis** — `/shipping-and-launch` sebelum merge ke `main` (push ke `main` langsung deploy).
+
+Aturan tetap:
+- Jangan menambah policy RLS `USING (true)` atau kredensial baru di source.
+- Backlog kesiapan monetisasi: `docs/agents/monetization-readiness.md`. Kerjakan P0 berurutan.
