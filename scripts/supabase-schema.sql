@@ -1,5 +1,6 @@
 -- DAWWIN Database Schema
--- Run this in Supabase SQL Editor (Dashboard → SQL Editor → New Query)
+-- Run this in Supabase SQL Editor (Dashboard → SQL Editor → New Query),
+-- then run supabase/migrations/0001_tenancy_rls.sql.
 
 -- 1. Audit workspace documents (replaces localStorage)
 CREATE TABLE IF NOT EXISTS audit_documents (
@@ -63,20 +64,14 @@ CREATE TABLE IF NOT EXISTS lha_risk_profiles (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- Enable Row Level Security (RLS) with public read/write for anon
--- (since this is a personal tool, allow anon full access)
+-- Row Level Security: aktif tanpa policy, artinya semua akses klien ditolak
+-- sampai migrasi tenant dijalankan. JANGAN menambah policy USING (true).
+-- Lanjutkan dengan supabase/migrations/0001_tenancy_rls.sql.
 ALTER TABLE audit_documents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE lha_reports ENABLE ROW LEVEL SECURITY;
 ALTER TABLE lha_findings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE lha_fraud_indicators ENABLE ROW LEVEL SECURITY;
 ALTER TABLE lha_risk_profiles ENABLE ROW LEVEL SECURITY;
-
--- Policies: allow anon full access
-CREATE POLICY "anon_all_audit_documents" ON audit_documents FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "anon_all_lha_reports" ON lha_reports FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "anon_all_lha_findings" ON lha_findings FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "anon_all_lha_fraud_indicators" ON lha_fraud_indicators FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "anon_all_lha_risk_profiles" ON lha_risk_profiles FOR ALL USING (true) WITH CHECK (true);
 
 -- Auto-update timestamp trigger
 CREATE OR REPLACE FUNCTION update_updated_at()

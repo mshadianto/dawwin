@@ -3,14 +3,6 @@ import { supabase } from "../lib/supabase";
 
 const BASE = import.meta.env.BASE_URL || "/";
 
-function looksLegacyBpkh(data) {
-  if (!data) return false;
-  try {
-    const haystack = JSON.stringify(data);
-    return /BPKH|Pengelola Keuangan Haji|PBPKH|Keuangan Haji/i.test(haystack);
-  } catch { return false; }
-}
-
 async function fetchFromSupabase() {
   const [reportsRes, findingsRes, fraudRes, riskRes] = await Promise.all([
     supabase.from("lha_reports").select("*").order("created_at"),
@@ -72,36 +64,37 @@ async function fetchFromSupabase() {
   };
 }
 
-export function useLHAData() {
+/**
+ * Data LHA untuk analitik.
+ * - Tanpa tenantId (mode demo): data contoh statis, tidak ada panggilan ke database.
+ * - Dengan tenantId: laporan milik tenant (RLS); bila belum ada, tampilkan data contoh.
+ */
+export function useLHAData(tenantId = null) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let cancelled = false;
     const loadFromJson = () => fetch(`${BASE}data/lha-parsed.json`)
       .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
-      .then(d => { setData(d); setLoading(false); })
-      .catch(e2 => { setError(e2.message); setLoading(false); });
+      .then(d => { if (!cancelled) { setData(d); setLoading(false); } })
+      .catch(e2 => { if (!cancelled) { setError(e2.message); setLoading(false); } });
 
-    fetchFromSupabase()
-      .then(d => {
-        if (d && !looksLegacyBpkh(d)) {
-          setData(d);
-          setLoading(false);
-        } else {
-          // No data, or stale BPKH-tagged data → purge & fallback to JSON
-          if (d && looksLegacyBpkh(d)) {
-            // Best-effort cleanup of stale Supabase rows
-            supabase.from("lha_reports").delete().neq("id", -1).then(() => {});
-            supabase.from("lha_findings").delete().neq("id", -1).then(() => {});
-            supabase.from("lha_fraud_indicators").delete().neq("id", -1).then(() => {});
-            supabase.from("lha_risk_profiles").delete().neq("id", -1).then(() => {});
-          }
-          return loadFromJson();
-        }
-      })
-      .catch(() => loadFromJson());
-  }, []);
+    setLoading(true);
+    setError(null);
+    if (!tenantId) {
+      loadFromJson();
+    } else {
+      fetchFromSupabase()
+        .then(d => {
+          if (cancelled) return;
+          if (d) { setData(d); setLoading(false); } else { return loadFromJson(); }
+        })
+        .catch(() => loadFromJson());
+    }
+    return () => { cancelled = true; };
+  }, [tenantId]);
 
   return { data, loading, error };
 }

@@ -7,6 +7,8 @@ import { LHAProvider } from "./contexts/LHAContext";
 import { DataSourceProvider, useActiveData } from "./contexts/DataSourceContext";
 import { adaptLhaParsedToCrossLha } from "./utils/lhaAdapter";
 import LHASelector from "./components/LHASelector";
+import { AuthProvider, useAuth } from "./auth/AuthContext";
+import AccountPanel from "./auth/AccountPanel";
 import Dashboard from "./tabs/Dashboard";
 import AuditInfoTab from "./tabs/AuditInfoTab";
 import COSOTab from "./tabs/COSOTab";
@@ -66,7 +68,14 @@ const TAB_COMPONENTS = {
 const LHA_TAB_IDS = ["committee", "crosslha", "compare", "fraud_heatmap", "data_source", "audit_universe", "audit_plan", "analytics", "risk", "fraud", "iso31000", "roi", "xai", "drift", "mlpipeline", "autofe", "copilot"];
 
 function MainShell() {
-  const { data, setData, saving } = usePersistedState(STORAGE_KEY, DEFAULT_STATE);
+  const { tenant } = useAuth();
+  const { data, setData, saving, remote, syncFailed } = usePersistedState(STORAGE_KEY, DEFAULT_STATE, { tenantId: tenant?.id ?? null });
+  const syncLabel = remote === "local" ? "LOKAL"
+    : remote === "loading" ? "MEMUAT..."
+    : remote === "error" ? "GAGAL MEMUAT — TIDAK DISIMPAN"
+    : syncFailed ? "GAGAL SYNC"
+    : saving ? "SYNCING..." : "SYNCED";
+  const syncColor = remote === "error" || syncFailed ? "#DC2626" : saving || remote === "loading" ? "#F59E0B" : "#059669";
 
   const resetData = () => {
     if (confirm("Reset semua data ke contoh default? Data saat ini akan hilang.")) {
@@ -154,6 +163,7 @@ function MainShell() {
 
         {/* Footer Actions */}
         <div style={{ padding: "16px", borderTop: "1px solid #1E293B" }}>
+          <AccountPanel />
           <div style={{ display: "flex", gap: 6 }}>
             <button onClick={exportJSON} style={{
               flex: 1, background: "#1E293B", border: "1px solid #334155", borderRadius: 3,
@@ -170,10 +180,10 @@ function MainShell() {
             padding: "8px 0 0", fontSize: 9, color: "#475569", textAlign: "center",
             fontFamily: "'JetBrains Mono', monospace", letterSpacing: 0.5,
           }}>
-            {saving ? "SYNCING..." : "SYNCED"}
+            {syncLabel}
             <span style={{
               display: "inline-block", width: 6, height: 6, borderRadius: "50%",
-              background: saving ? "#F59E0B" : "#059669", marginLeft: 6, verticalAlign: "middle",
+              background: syncColor, marginLeft: 6, verticalAlign: "middle",
               animation: saving ? "pulse 1s infinite" : "none",
             }} />
           </div>
@@ -230,13 +240,33 @@ function SourceAwareLHALayer() {
   );
 }
 
-export default function AuditDocApp() {
-  const { data: lhaRaw } = useLHAData();
+function TenantScopedApp() {
+  const { status, tenant } = useAuth();
+  const tenantId = tenant?.id ?? null;
+  const { data: lhaRaw } = useLHAData(tenantId);
   const jsonLhas = useMemo(() => adaptLhaParsedToCrossLha(lhaRaw), [lhaRaw]);
 
+  if (status === "loading") {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#0F172A", color: "#94A3B8", fontFamily: "'JetBrains Mono', monospace", fontSize: 11, letterSpacing: 2 }}>
+        MEMUAT...
+      </div>
+    );
+  }
+
+  // key: seluruh state di bawahnya dibuat ulang ketika berpindah tenant / keluar,
+  // sehingga data satu tenant tidak pernah terbawa ke sesi lain.
   return (
-    <DataSourceProvider jsonLhas={jsonLhas}>
+    <DataSourceProvider key={tenantId || "demo"} jsonLhas={jsonLhas}>
       <SourceAwareLHALayer />
     </DataSourceProvider>
+  );
+}
+
+export default function AuditDocApp() {
+  return (
+    <AuthProvider>
+      <TenantScopedApp />
+    </AuthProvider>
   );
 }
