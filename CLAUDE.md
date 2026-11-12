@@ -8,6 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev          # Vite dev server (localhost:5173)
 npm run build        # Production build to dist/
 npm run preview      # Preview production build locally
+npm test             # Vitest: RLS per tenant (PGlite), ai-proxy, aturan persist
 ```
 
 Deployment is automated via GitHub Actions (`.github/workflows/deploy.yml`) on push to `main`. The app is served at `https://mshadianto.github.io/dawwin/`.
@@ -16,10 +17,21 @@ Deployment is automated via GitHub Actions (`.github/workflows/deploy.yml`) on p
 
 ## Supabase
 
-- **Database seeding**: `node scripts/seed-supabase.mjs` — populates 6 LHA reports from `public/data/lha-parsed.json`
-- **Schema**: `scripts/supabase-schema.sql` — 5 tables (audit_documents, lha_reports, lha_findings, lha_fraud_indicators, lha_risk_profiles)
-- **Edge Functions**: `supabase/functions/ai-proxy/index.ts` — Groq LLaMA 3.3 proxy (deploy with `npx supabase functions deploy ai-proxy`)
-- **Client**: `src/lib/supabase.js` — credentials hardcoded with `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` env var overrides
+- **Schema dasar**: `scripts/supabase-schema.sql` (5 tabel) dan `scripts/ml-schema.sql`. RLS aktif tanpa policy.
+- **Migrasi**: `supabase/migrations/0001_tenancy_rls.sql` (tenant, keanggotaan, RLS, kuota AI), `0002_ml_tenancy_rls.sql`. Perubahan skema berikutnya selalu sebagai file migrasi baru + test di `tests/rls.test.js`.
+- **Tenant baru**: undang user di Authentication, lalu `select admin_create_tenant('Nama', 'email', 'trial', now() + interval '30 days');`
+- **Seeding**: `node scripts/seed-supabase.mjs` dengan env `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SEED_TENANT_ID`.
+- **Edge Function**: `supabase/functions/ai-proxy/` — `handler.ts` (logika, diuji di Vitest) + `index.ts` (wiring Deno). Secrets: `GROQ_API_KEY`, `ALLOWED_ORIGINS`. Fungsi kuota di database hanya untuk service role. Deploy: `npx supabase functions deploy ai-proxy`.
+- **Client**: `src/lib/supabase.js` — satu-satunya tempat URL dan anon key.
+
+## Auth dan tenant
+
+- `src/auth/AuthContext.jsx` — status `demo | tenant | no_tenant | loading | error`. `useAuth()` memberi `tenant`, `role`, `canWrite`.
+- **Mode demo** (tanpa login): tidak boleh ada panggilan ke tabel Supabase. Data contoh statis + localStorage.
+- **Mode tenant**: `usePersistedState(..., { tenantId, canWrite })` (sinkron dengan cek versi, `src/hooks/documentSync.js`) dan `useLHAData()` (tenant dari sesi). Subtree di-remount lewat `key` saat tenant berubah.
+- Field di `LOCAL_ONLY_FIELDS` (`activeTab`, `aiConfig`) tidak pernah dikirim ke server. Kunci localStorage baru wajib lewat `scopedKey()` dari `src/lib/tenantScope.js`.
+- Tab analitik membaca `data.reports`; `withLegacyReports()` menyamakan bentuk data contoh dan data database.
+- Data tenant tidak pernah dihapus otomatis oleh kode klien.
 
 ## Architecture
 
@@ -27,8 +39,8 @@ Deployment is automated via GitHub Actions (`.github/workflows/deploy.yml`) on p
 
 ### Two data domains
 
-1. **Manual audit data** — user-editable fields (audit info, COSO assessment, findings, observations, action plans). Managed via `usePersistedState` hook with dual persistence: localStorage (immediate) + Supabase `audit_documents` table (1.5s debounced).
-2. **LHA analytics data** — read-only parsed audit reports. Fetched via `useLHAData` hook from Supabase tables, falls back to static `public/data/lha-parsed.json`.
+1. **Manual audit data** — user-editable fields (audit info, COSO assessment, findings, observations, action plans). Managed via `usePersistedState` hook: localStorage (immediate) + in tenant mode Supabase `audit_documents` (1.5s debounced, only after the initial remote load succeeded).
+2. **LHA analytics data** — read-only parsed audit reports. `useLHAData()` reads the signed-in tenant's Supabase rows (empty tenants get an empty state, never sample data); demo mode uses static `public/data/lha-parsed.json`.
 
 ### Tab system
 
@@ -63,3 +75,18 @@ Tabs are defined in `src/constants/index.js` (TABS array) and routed in `App.jsx
 
 - `base: "/dawwin/"` — required for GitHub Pages subpath
 - Dev proxy: `/api/anthropic` → Anthropic API (legacy, unused in production)
+
+## Alur kerja agent (wajib untuk perubahan non-trivial)
+
+Skill ada di `.claude/skills/` (asal dan lisensi: `.claude/THIRD_PARTY_SKILLS.md`).
+
+1. **Klarifikasi** — `/grill-me` sampai semua keputusan terjawab.
+2. **Spec** — `/spec-driven-development`; simpan di `docs/specs/NNN-judul.md`.
+3. **Review independen** — `/egm:egm-review` atas spec (plugin EGM). Reviewer harus sesi baru yang tidak ikut menyusun spec. Tanpa plugin: buka sesi baru, beri hanya file spec, minta dicari kelemahannya.
+4. **Implementasi** — `/tdd`, satu irisan vertikal per commit. Bug: `/diagnosing-bugs`.
+5. **Review kode** — `/code-review-and-quality`; apa pun yang menyentuh auth, RLS, Edge Function, atau `backend/` juga lewat `/security-and-hardening`.
+6. **Rilis** — `/shipping-and-launch` sebelum merge ke `main` (push ke `main` langsung deploy).
+
+Aturan tetap:
+- Jangan menambah policy RLS `USING (true)` atau kredensial baru di source.
+- Backlog kesiapan monetisasi: `docs/agents/monetization-readiness.md`. Kerjakan P0 berurutan.

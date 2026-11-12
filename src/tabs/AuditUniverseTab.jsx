@@ -6,6 +6,7 @@
 // ═══════════════════════════════════════════════════════
 
 import { useState, useMemo, useEffect } from "react";
+import { scopedKey } from "../lib/tenantScope";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   PieChart, Pie, Cell, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
@@ -64,7 +65,7 @@ export default function AuditUniverseTab() {
   // Persistent universe (loadable/customizable)
   const [units, setUnits] = useState(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
+      const saved = localStorage.getItem(scopedKey(STORAGE_KEY));
       if (saved) return JSON.parse(saved);
     } catch {}
     return DEFAULT_AUDITABLE_UNITS;
@@ -73,7 +74,7 @@ export default function AuditUniverseTab() {
   // Stakeholder concerns (1-5 per unit)
   const [stakeholderConcerns, setStakeholderConcerns] = useState(() => {
     try {
-      const saved = localStorage.getItem(STAKEHOLDER_KEY);
+      const saved = localStorage.getItem(scopedKey(STAKEHOLDER_KEY));
       if (saved) return JSON.parse(saved);
     } catch {}
     return {};
@@ -86,10 +87,10 @@ export default function AuditUniverseTab() {
 
   // Persist changes
   useEffect(() => {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(units)); } catch {}
+    try { localStorage.setItem(scopedKey(STORAGE_KEY), JSON.stringify(units)); } catch {}
   }, [units]);
   useEffect(() => {
-    try { localStorage.setItem(STAKEHOLDER_KEY, JSON.stringify(stakeholderConcerns)); } catch {}
+    try { localStorage.setItem(scopedKey(STAKEHOLDER_KEY), JSON.stringify(stakeholderConcerns)); } catch {}
   }, [stakeholderConcerns]);
 
   // ── Score all units ───────────────────────────

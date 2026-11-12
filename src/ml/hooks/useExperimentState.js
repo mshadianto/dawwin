@@ -22,20 +22,23 @@ const KEYS = {
   workspace: ["ml", "workspace"],
 };
 
-// ─── Ensure a default workspace exists ───
+// ─── Ensure the tenant's workspace exists (RLS membatasi ke tenant user) ───
 async function ensureWorkspace() {
-  const { data: existing } = await supabase
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session?.user) throw new Error("Masuk terlebih dahulu untuk memakai ML Workspace.");
+
+  const { data: existing, error: findError } = await supabase
     .from(WORKSPACE_TABLE)
     .select("id")
-    .eq("owner_id", "anon")
+    .order("created_at")
     .limit(1)
-    .single();
-
+    .maybeSingle();
+  if (findError) throw findError;
   if (existing) return existing.id;
 
   const { data: created, error } = await supabase
     .from(WORKSPACE_TABLE)
-    .insert({ owner_id: "anon", name: "Default Workspace" })
+    .insert({ owner_id: session.user.id, name: "Default Workspace" })
     .select("id")
     .single();
 

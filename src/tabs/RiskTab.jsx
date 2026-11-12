@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Card, SectionHeader, Badge, ExhibitHeader, ProgressBar, DonutChart, MaturityIndicator, HeatCell, Divider } from "../components/ui";
-import { useLHAData } from "../hooks/useLHAData";
+import { useLHAData, hasLhaFindings } from "../hooks/useLHAData";
+import LhaEmptyState from "../components/LhaEmptyState";
 
 const RISK_META = {
   operasional: { color: "#D97706", label: "Operational", desc: "Process failures, human error, system breakdowns", icon: "OPS" },
@@ -19,7 +20,7 @@ export default function RiskTab() {
   const [heatmapView, setHeatmapView] = useState("matrix");
 
   const analysis = useMemo(() => {
-    if (!data) return null;
+    if (!hasLhaFindings(data)) return null;
     const reports = data.reports;
     const riskTypes = ["operasional", "strategis", "kepatuhan", "reputasi", "hukum"];
     const matrix = {};
@@ -73,7 +74,7 @@ export default function RiskTab() {
 
   if (loading) return <div style={{ padding: 60, textAlign: "center", color: "#94A3B8", fontSize: 13, fontFamily: "'JetBrains Mono', monospace" }}>Loading risk engine...</div>;
   if (error) return <div style={{ padding: 60, textAlign: "center", color: "#DC2626" }}>Failed: {error}</div>;
-  if (!analysis) return null;
+  if (!analysis) return <LhaEmptyState />;
 
   const { riskTypes, matrix, totals, totalExposure, reports, maxCell, riskFindings, heatmap5x5, allFindings } = analysis;
 

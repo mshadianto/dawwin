@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Card, SectionHeader, Badge, StatCard, ExhibitHeader, ProgressBar, DonutChart, RadarChart, Divider } from "../components/ui";
-import { useLHAData } from "../hooks/useLHAData";
+import { useLHAData, hasLhaFindings } from "../hooks/useLHAData";
+import LhaEmptyState from "../components/LhaEmptyState";
 
 const RISK_COLORS = {
   operasional: "#D97706", strategis: "#2563EB", kepatuhan: "#DC2626",
@@ -224,7 +225,7 @@ export default function XAITab() {
   const [biasView, setBiasView] = useState("category");
 
   const xai = useMemo(() => {
-    if (!data) return null;
+    if (!hasLhaFindings(data)) return null;
     const reports = data.reports;
     const allFindings = reports.flatMap(r => r.findings);
     const allFraud = reports.flatMap(r => r.fraud_indicators);
@@ -412,7 +413,7 @@ export default function XAITab() {
 
   if (loading) return <div style={{ padding: 60, textAlign: "center", color: "#94A3B8", fontSize: 13, fontFamily: "'JetBrains Mono', monospace" }}>Loading XAI engine...</div>;
   if (error) return <div style={{ padding: 60, textAlign: "center", color: "#DC2626", fontSize: 13 }}>Failed: {error}</div>;
-  if (!xai) return null;
+  if (!xai) return <LhaEmptyState />;
 
   const {
     findingList, shapResults, globalImportance,

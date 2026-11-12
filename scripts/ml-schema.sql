@@ -77,22 +77,9 @@ CREATE OR REPLACE TRIGGER trg_ml_experiments_updated
     BEFORE UPDATE ON ml_experiments
     FOR EACH ROW EXECUTE FUNCTION update_ml_updated_at();
 
--- 5. Row Level Security (RLS) — users only see their own data
+-- 5. Row Level Security: aktif tanpa policy (semua akses klien ditolak) sampai
+--    supabase/migrations/0002_ml_tenancy_rls.sql dijalankan.
+--    JANGAN menambah policy USING (true).
 ALTER TABLE ml_workspaces ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ml_experiments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ml_run_log ENABLE ROW LEVEL SECURITY;
-
--- Anon access for free-tier (no auth) — scope by owner_id header
-CREATE POLICY "anon_workspace_access" ON ml_workspaces
-    FOR ALL USING (true) WITH CHECK (true);
-
-CREATE POLICY "anon_experiment_access" ON ml_experiments
-    FOR ALL USING (true) WITH CHECK (true);
-
-CREATE POLICY "anon_run_log_access" ON ml_run_log
-    FOR ALL USING (true) WITH CHECK (true);
-
--- When auth is enabled, replace above with:
--- CREATE POLICY "auth_workspace_access" ON ml_workspaces
---     FOR ALL USING (owner_id = auth.uid()::text)
---     WITH CHECK (owner_id = auth.uid()::text);
