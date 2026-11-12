@@ -156,3 +156,57 @@ function adaptRawReport(r, ri) {
       findings,
     };
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// Bentuk "reports" (dipakai tab Analytics, Risk, Fraud, ISO 31000, ROI, XAI, Drift).
+// Data dari Supabase sudah berbentuk ini; data contoh statis berbentuk {lhas: [...]}
+// dan dikonversi di sini supaya tab-tab itu tidak bergantung pada sumber data.
+// ─────────────────────────────────────────────────────────────────────────
+function fraudSeverity(fi) {
+  if (fi.severity) return fi.severity;
+  const score = (Number(fi.likelihood) || 0) * (Number(fi.impact) || 0);
+  return score >= 15 ? "high" : score >= 8 ? "medium" : "low";
+}
+
+function richLhaToReport(lha) {
+  const findings = (lha.findings || []).map(f => ({
+    title: f.title || null,
+    page: f.page ?? null,
+    condition: f.condition || null,
+    criteria: f.criteria || null,
+    cause: f.cause || null,
+    effect: f.effect || null,
+    recommendation: f.recommendation || null,
+    risk_types: f.riskCategories || f.risk_types || [],
+  }));
+  const riskTypes = [...new Set(findings.flatMap(f => f.risk_types))];
+  return {
+    source_file: lha.number || lha.title || "",
+    metadata: {
+      title: lha.title || null,
+      number: lha.number || null,
+      date: lha.date || null,
+      unit: lha.unit || null,
+      org: lha.organization || null,
+      total_pages: 0,
+      total_texts: 0,
+    },
+    findings,
+    fraud_indicators: (lha.fraudIndicators || []).map(fi => ({
+      keyword: fi.title || fi.scheme || "",
+      category: fi.acfeCategory || fi.category || "lainnya",
+      page: fi.page ?? null,
+      context: fi.description || "",
+      text: fi.description || "",
+      severity: fraudSeverity(fi),
+    })),
+    risk_profile: riskTypes.map(type => ({ type, mentioned_page: null })),
+  };
+}
+
+/** Mengembalikan input yang sama ditambah `reports` berbentuk legacy. Null tetap null. */
+export function withLegacyReports(input) {
+  if (!input) return input;
+  const reports = Array.isArray(input.reports) ? input.reports : (input.lhas || []).map(richLhaToReport);
+  return { ...input, total_reports: reports.length, reports };
+}

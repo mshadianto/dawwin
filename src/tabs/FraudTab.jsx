@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Card, SectionHeader, Badge, StatCard, ExhibitHeader, ProgressBar, DonutChart, Divider } from "../components/ui";
-import { useLHAData } from "../hooks/useLHAData";
+import { useLHAData, hasLhaFindings } from "../hooks/useLHAData";
+import LhaEmptyState from "../components/LhaEmptyState";
 
 const SEVERITY_CONFIG = {
   high: { label: "CRITICAL", color: "#991B1B", bg: "#DC2626", barColor: "#DC2626" },
@@ -22,7 +23,7 @@ export default function FraudTab() {
   const [viewMode, setViewMode] = useState("patterns");
 
   const analysis = useMemo(() => {
-    if (!data) return null;
+    if (!hasLhaFindings(data)) return null;
     const reports = data.reports;
     const all = reports.flatMap(r =>
       r.fraud_indicators.map(fi => ({
@@ -77,7 +78,7 @@ export default function FraudTab() {
 
   if (loading) return <div style={{ padding: 60, textAlign: "center", color: "#94A3B8", fontSize: 13, fontFamily: "'JetBrains Mono', monospace" }}>Loading forensic analysis...</div>;
   if (error) return <div style={{ padding: 60, textAlign: "center", color: "#DC2626" }}>Failed: {error}</div>;
-  if (!analysis) return null;
+  if (!analysis) return <LhaEmptyState />;
 
   const {
     all, categories, highCount, medCount, lowCount, reportsWithFraud,

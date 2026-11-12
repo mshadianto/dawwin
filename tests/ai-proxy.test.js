@@ -6,8 +6,9 @@ const ORIGIN = "https://mshadianto.github.io";
 function setup(overrides = {}) {
   const deps = {
     allowedOrigins: [ORIGIN],
-    getUser: vi.fn(async (auth) => (auth === "Bearer good" ? { id: "u1" } : null)),
-    consumeQuota: vi.fn(async () => ({ allowed: true, remaining: 5 })),
+    getUser: vi.fn(async (token) => (token === "good" ? { id: "u1" } : null)),
+    consumeQuota: vi.fn(async () => ({ allowed: true, remaining: 5, usage_id: 77 })),
+    refundQuota: vi.fn(async () => {}),
     callModel: vi.fn(async () => ({ ok: true, text: "halo" })),
     log: vi.fn(),
     ...overrides,
@@ -32,6 +33,10 @@ describe("ai-proxy", () => {
     expect(await res.json()).toEqual({ text: "halo", remaining: 5 });
     expect(res.headers.get("Access-Control-Allow-Origin")).toBe(ORIGIN);
     expect(deps.callModel).toHaveBeenCalledWith({ prompt: "Ringkas temuan ini", model: "llama-3.3-70b-versatile", max_tokens: 1000 });
+    // Identitas kuota berasal dari token yang diverifikasi, bukan dari body.
+    expect(deps.getUser).toHaveBeenCalledWith("good");
+    expect(deps.consumeQuota).toHaveBeenCalledWith("u1", "llama-3.3-70b-versatile");
+    expect(deps.refundQuota).not.toHaveBeenCalled();
   });
 
   it("menolak tanpa token dan dengan token yang bukan milik user (mis. anon key)", async () => {
@@ -47,6 +52,7 @@ describe("ai-proxy", () => {
     const res = await handle(post({ prompt: "x" }, { origin: "https://evil.test" }));
     expect(res.status).toBe(403);
     expect(res.headers.get("Access-Control-Allow-Origin")).toBeNull();
+    expect(res.headers.get("Vary")).toBe("Origin");
     expect(deps.getUser).not.toHaveBeenCalled();
   });
 
@@ -110,6 +116,31 @@ describe("ai-proxy", () => {
     expect(res.status).toBe(502);
     expect(text).not.toContain("gsk_secret");
     expect(deps.log).toHaveBeenCalledWith("model_error", expect.objectContaining({ status: 401 }));
+  });
+
+  it.each([
+    ["galat upstream", async () => ({ ok: false, status: 429 })],
+    ["timeout / exception", async () => { throw new Error("timeout"); }],
+    ["jawaban kosong", async () => ({ ok: true, text: "  " })],
+  ])("mengembalikan kuota bila model gagal: %s", async (_name, callModel) => {
+    const { deps, handle } = setup({ callModel: vi.fn(callModel) });
+    expect((await handle(post({ prompt: "x" }))).status).toBe(502);
+    expect(deps.refundQuota).toHaveBeenCalledWith("u1", 77);
+  });
+
+  it("tetap menjawab 502 bila pengembalian kuota sendiri gagal", async () => {
+    const { deps, handle } = setup({
+      callModel: vi.fn(async () => ({ ok: false, status: 500 })),
+      refundQuota: vi.fn(async () => { throw new Error("db down"); }),
+    });
+    expect((await handle(post({ prompt: "x" }))).status).toBe(502);
+    expect(deps.log).toHaveBeenCalledWith("refund_error", expect.objectContaining({ usage_id: 77 }));
+  });
+
+  it("identitas di body diabaikan", async () => {
+    const { deps, handle } = setup();
+    await handle(post({ prompt: "x", user_id: "korban", p_user: "korban" }));
+    expect(deps.consumeQuota).toHaveBeenCalledWith("u1", expect.any(String));
   });
 
   it("hanya menerima POST", async () => {

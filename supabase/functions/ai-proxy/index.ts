@@ -2,31 +2,38 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { createAiProxyHandler, parseList } from "./handler.ts";
 
-// Secrets yang wajib diset: GROQ_API_KEY, ALLOWED_ORIGINS (dipisah koma).
-// Opsional: ALLOWED_MODELS. SUPABASE_URL dan SUPABASE_ANON_KEY disediakan platform.
+// Secrets yang wajib diset: GROQ_API_KEY, ALLOWED_ORIGINS (dipisah koma, mis.
+// "https://mshadianto.github.io,http://localhost:5173"). Opsional: ALLOWED_MODELS.
+// SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY disediakan platform.
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+const noSession = { auth: { persistSession: false, autoRefreshToken: false } };
 
-function userClient(authorization: string) {
-  return createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, {
-    global: { headers: { Authorization: authorization } },
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
-}
+// Klien anon: hanya untuk memverifikasi token user.
+const authClient = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_ANON_KEY")!, noSession);
+// Klien service role: hanya untuk fungsi kuota, yang tidak bisa dipanggil user.
+// Key ini tidak pernah keluar dari fungsi ini.
+const adminClient = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, noSession);
 
 const handler = createAiProxyHandler({
   allowedOrigins: parseList(Deno.env.get("ALLOWED_ORIGINS")),
   allowedModels: parseList(Deno.env.get("ALLOWED_MODELS")),
 
-  async getUser(authorization) {
-    const { data, error } = await userClient(authorization).auth.getUser();
+  async getUser(token) {
+    const { data, error } = await authClient.auth.getUser(token);
     if (error || !data.user) return null;
     return { id: data.user.id };
   },
 
-  async consumeQuota(authorization, model) {
-    const { data, error } = await userClient(authorization).rpc("consume_ai_quota", { p_model: model });
+  async consumeQuota(userId, model) {
+    const { data, error } = await adminClient.rpc("consume_ai_quota", { p_user: userId, p_model: model });
     if (error) throw new Error(error.message);
     return data;
+  },
+
+  async refundQuota(userId, usageId) {
+    const { error } = await adminClient.rpc("refund_ai_quota", { p_user: userId, p_usage_id: usageId });
+    if (error) throw new Error(error.message);
   },
 
   async callModel({ prompt, model, max_tokens }) {

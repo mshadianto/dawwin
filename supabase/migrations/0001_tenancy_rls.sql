@@ -47,12 +47,11 @@ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public, pg_temp AS $$
   SELECT role FROM tenant_members WHERE user_id = auth.uid() LIMIT 1
 $$;
 
-CREATE FUNCTION can_write_tenant(p_tenant UUID) RETURNS BOOLEAN
+CREATE FUNCTION current_tenant_can_write() RETURNS BOOLEAN
 LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public, pg_temp AS $$
   SELECT EXISTS (
     SELECT 1 FROM tenant_members
-    WHERE user_id = auth.uid() AND tenant_id = p_tenant
-      AND role IN ('owner', 'admin', 'auditor')
+    WHERE user_id = auth.uid() AND role IN ('owner', 'admin', 'auditor')
   )
 $$;
 
@@ -60,11 +59,19 @@ $$;
 INSERT INTO tenants (name, plan, ai_monthly_quota) VALUES ('Legacy (pra-migrasi)', 'legacy', 0);
 
 -- ── 4. tenant_id + RLS di tabel data ──────────────────────────────────────
-DROP POLICY IF EXISTS "anon_all_audit_documents" ON audit_documents;
-DROP POLICY IF EXISTS "anon_all_lha_reports" ON lha_reports;
-DROP POLICY IF EXISTS "anon_all_lha_findings" ON lha_findings;
-DROP POLICY IF EXISTS "anon_all_lha_fraud_indicators" ON lha_fraud_indicators;
-DROP POLICY IF EXISTS "anon_all_lha_risk_profiles" ON lha_risk_profiles;
+-- Semua policy lama dibuang lewat katalog, apa pun namanya. Policy permisif
+-- yang tertinggal akan di-OR dengan policy baru dan membuka data antar-tenant.
+DO $$
+DECLARE p RECORD;
+BEGIN
+  FOR p IN SELECT policyname, tablename FROM pg_policies
+            WHERE schemaname = 'public'
+              AND tablename IN ('audit_documents', 'lha_reports', 'lha_findings',
+                                'lha_fraud_indicators', 'lha_risk_profiles')
+  LOOP
+    EXECUTE format('DROP POLICY %I ON %I', p.policyname, p.tablename);
+  END LOOP;
+END $$;
 
 DO $$
 DECLARE
@@ -81,20 +88,56 @@ BEGIN
     EXECUTE format('CREATE INDEX %I ON %I (tenant_id)', t || '_tenant_idx', t);
 
     EXECUTE format('ALTER TABLE %I ENABLE ROW LEVEL SECURITY', t);
-    EXECUTE format('CREATE POLICY tenant_select ON %I FOR SELECT TO authenticated USING (tenant_id = current_tenant_id())', t);
-    EXECUTE format('CREATE POLICY tenant_insert ON %I FOR INSERT TO authenticated WITH CHECK (can_write_tenant(tenant_id))', t);
-    EXECUTE format('CREATE POLICY tenant_update ON %I FOR UPDATE TO authenticated USING (can_write_tenant(tenant_id)) WITH CHECK (can_write_tenant(tenant_id))', t);
-    EXECUTE format('CREATE POLICY tenant_delete ON %I FOR DELETE TO authenticated USING (can_write_tenant(tenant_id))', t);
+    -- (SELECT ...) membuat fungsi dievaluasi sekali per query, bukan per baris.
+    EXECUTE format('CREATE POLICY tenant_select ON %I FOR SELECT TO authenticated USING (tenant_id = (SELECT current_tenant_id()))', t);
+    EXECUTE format('CREATE POLICY tenant_insert ON %I FOR INSERT TO authenticated WITH CHECK (tenant_id = (SELECT current_tenant_id()) AND (SELECT current_tenant_can_write()))', t);
+    EXECUTE format('CREATE POLICY tenant_update ON %I FOR UPDATE TO authenticated USING (tenant_id = (SELECT current_tenant_id()) AND (SELECT current_tenant_can_write())) WITH CHECK (tenant_id = (SELECT current_tenant_id()) AND (SELECT current_tenant_can_write()))', t);
+    EXECUTE format('CREATE POLICY tenant_delete ON %I FOR DELETE TO authenticated USING (tenant_id = (SELECT current_tenant_id()) AND (SELECT current_tenant_can_write()))', t);
 
-    EXECUTE format('REVOKE ALL ON %I FROM anon', t);
+    -- TRUNCATE tidak tunduk pada RLS: beri hanya empat hak yang dipakai aplikasi.
+    EXECUTE format('REVOKE ALL ON %I FROM anon, authenticated', t);
+    EXECUTE format('GRANT SELECT, INSERT, UPDATE, DELETE ON %I TO authenticated', t);
   END LOOP;
 END $$;
 
 -- Keunikan sekarang per tenant.
-ALTER TABLE audit_documents DROP CONSTRAINT IF EXISTS audit_documents_slug_key;
+-- Keunikan global lama dibuang lewat katalog (nama constraint di database live
+-- bisa berbeda dari file schema), lalu diganti keunikan per tenant.
+DO $$
+DECLARE r RECORD;
+BEGIN
+  FOR r IN
+    SELECT i.indexrelid::regclass AS index_name, c.conname, i.indrelid::regclass AS table_name
+      FROM pg_index i
+      LEFT JOIN pg_constraint c ON c.conindid = i.indexrelid AND c.contype = 'u'
+      JOIN pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = i.indkey[0]
+     WHERE i.indisunique AND NOT i.indisprimary AND i.indnatts = 1
+       AND ((i.indrelid = 'public.audit_documents'::regclass AND a.attname = 'slug')
+         OR (i.indrelid = 'public.lha_reports'::regclass AND a.attname = 'source_file'))
+  LOOP
+    IF r.conname IS NOT NULL THEN
+      EXECUTE format('ALTER TABLE %s DROP CONSTRAINT %I', r.table_name, r.conname);
+    ELSE
+      EXECUTE format('DROP INDEX %s', r.index_name);
+    END IF;
+  END LOOP;
+END $$;
 ALTER TABLE audit_documents ADD CONSTRAINT audit_documents_tenant_slug_key UNIQUE (tenant_id, slug);
-DROP INDEX IF EXISTS idx_lha_reports_source;
 CREATE UNIQUE INDEX idx_lha_reports_tenant_source ON lha_reports (tenant_id, source_file);
+
+-- Nomor versi dokumen: dasar penolakan tulis dari salinan yang sudah basi
+-- (dua auditor, atau satu user di dua perangkat).
+ALTER TABLE audit_documents ADD COLUMN version BIGINT NOT NULL DEFAULT 1;
+CREATE FUNCTION bump_audit_document_version() RETURNS TRIGGER
+LANGUAGE plpgsql AS $$
+BEGIN
+  NEW.version = OLD.version + 1;
+  NEW.updated_at = now();
+  RETURN NEW;
+END $$;
+CREATE TRIGGER trg_audit_documents_version
+  BEFORE UPDATE ON audit_documents
+  FOR EACH ROW EXECUTE FUNCTION bump_audit_document_version();
 
 -- Tabel anak harus berada di tenant yang sama dengan laporannya.
 ALTER TABLE lha_reports ADD CONSTRAINT lha_reports_id_tenant_key UNIQUE (id, tenant_id);
@@ -121,21 +164,24 @@ REVOKE ALL ON tenants, tenant_members, ai_usage FROM anon, authenticated;
 GRANT SELECT ON tenants, tenant_members, ai_usage TO authenticated;
 
 -- ── 6. Kuota AI: cek + catat dalam satu transaksi ─────────────────────────
-CREATE FUNCTION consume_ai_quota(p_model TEXT) RETURNS JSONB
+-- Hanya service role (Edge Function ai-proxy) yang boleh memanggil. User id
+-- dikirim oleh fungsi itu setelah token diverifikasi; klien tidak bisa
+-- memanggilnya langsung untuk menguras kuota.
+CREATE FUNCTION consume_ai_quota(p_user UUID, p_model TEXT) RETURNS JSONB
 LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path = public, pg_temp AS $$
 DECLARE
-  v_user   UUID := auth.uid();
   v_tenant tenants%ROWTYPE;
   v_month  INTEGER;
   v_minute INTEGER;
+  v_usage  BIGINT;
 BEGIN
-  IF v_user IS NULL THEN
+  IF p_user IS NULL THEN
     RETURN jsonb_build_object('allowed', false, 'reason', 'unauthenticated');
   END IF;
 
   SELECT t.* INTO v_tenant FROM tenants t
     JOIN tenant_members m ON m.tenant_id = t.id
-   WHERE m.user_id = v_user LIMIT 1;
+   WHERE m.user_id = p_user LIMIT 1;
   IF NOT FOUND THEN
     RETURN jsonb_build_object('allowed', false, 'reason', 'no_tenant');
   END IF;
@@ -148,7 +194,7 @@ BEGIN
   PERFORM pg_advisory_xact_lock(hashtextextended(v_tenant.id::text, 0));
 
   SELECT count(*) INTO v_minute FROM ai_usage
-   WHERE user_id = v_user AND created_at > now() - interval '1 minute';
+   WHERE user_id = p_user AND created_at > now() - interval '1 minute';
   IF v_minute >= 10 THEN
     RETURN jsonb_build_object('allowed', false, 'reason', 'rate_limited');
   END IF;
@@ -159,8 +205,19 @@ BEGIN
     RETURN jsonb_build_object('allowed', false, 'reason', 'quota_exceeded');
   END IF;
 
-  INSERT INTO ai_usage (tenant_id, user_id, model) VALUES (v_tenant.id, v_user, left(p_model, 100));
-  RETURN jsonb_build_object('allowed', true, 'remaining', v_tenant.ai_monthly_quota - v_month - 1);
+  INSERT INTO ai_usage (tenant_id, user_id, model) VALUES (v_tenant.id, p_user, left(p_model, 100))
+    RETURNING id INTO v_usage;
+  RETURN jsonb_build_object('allowed', true, 'usage_id', v_usage,
+                            'remaining', v_tenant.ai_monthly_quota - v_month - 1);
+END $$;
+
+-- Dipanggil ai-proxy ketika model gagal menjawab, supaya kegagalan tidak memakan kuota.
+CREATE FUNCTION refund_ai_quota(p_user UUID, p_usage_id BIGINT) RETURNS BOOLEAN
+LANGUAGE plpgsql VOLATILE SECURITY DEFINER SET search_path = public, pg_temp AS $$
+BEGIN
+  DELETE FROM ai_usage
+   WHERE id = p_usage_id AND user_id = p_user AND created_at > now() - interval '5 minutes';
+  RETURN FOUND;
 END $$;
 
 -- ── 7. Provisioning tenant: hanya pemilik produk ──────────────────────────
@@ -172,9 +229,12 @@ DECLARE
   v_user UUID;
   v_tenant UUID;
 BEGIN
-  SELECT id INTO v_user FROM auth.users WHERE lower(email) = lower(trim(p_owner_email));
+  -- Hanya email yang sudah terkonfirmasi: mencegah orang lain mendaftar lebih
+  -- dulu dengan alamat klien lalu menjadi owner tenant.
+  SELECT id INTO v_user FROM auth.users
+   WHERE lower(email) = lower(trim(p_owner_email)) AND email_confirmed_at IS NOT NULL;
   IF v_user IS NULL THEN
-    RAISE EXCEPTION 'User % belum ada. Undang dulu lewat Authentication > Users.', p_owner_email;
+    RAISE EXCEPTION 'User % belum ada atau emailnya belum terkonfirmasi. Undang lewat Authentication > Users dan tunggu undangan diterima.', p_owner_email;
   END IF;
   IF EXISTS (SELECT 1 FROM tenant_members WHERE user_id = v_user) THEN
     RAISE EXCEPTION 'User % sudah menjadi anggota tenant lain.', p_owner_email;
@@ -186,12 +246,19 @@ BEGIN
 END $$;
 
 -- ── 8. Hak eksekusi fungsi ────────────────────────────────────────────────
-REVOKE EXECUTE ON FUNCTION current_tenant_id(), current_tenant_role(), can_write_tenant(UUID),
-  consume_ai_quota(TEXT) FROM PUBLIC, anon;
-GRANT EXECUTE ON FUNCTION current_tenant_id(), current_tenant_role(), can_write_tenant(UUID),
-  consume_ai_quota(TEXT) TO authenticated;
+REVOKE EXECUTE ON FUNCTION current_tenant_id(), current_tenant_role(), current_tenant_can_write()
+  FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION current_tenant_id(), current_tenant_role(), current_tenant_can_write()
+  TO authenticated;
 
-REVOKE EXECUTE ON FUNCTION admin_create_tenant(TEXT, TEXT, TEXT, TIMESTAMPTZ) FROM PUBLIC, anon, authenticated;
-GRANT EXECUTE ON FUNCTION admin_create_tenant(TEXT, TEXT, TEXT, TIMESTAMPTZ) TO service_role;
+REVOKE EXECUTE ON FUNCTION consume_ai_quota(UUID, TEXT), refund_ai_quota(UUID, BIGINT),
+  admin_create_tenant(TEXT, TEXT, TEXT, TIMESTAMPTZ) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION consume_ai_quota(UUID, TEXT), refund_ai_quota(UUID, BIGINT),
+  admin_create_tenant(TEXT, TEXT, TEXT, TIMESTAMPTZ) TO service_role;
+
+-- ── 9. Pemeriksaan pasca-migrasi ──────────────────────────────────────────
+-- Setiap tabel data harus punya tepat empat policy tenant_*. Jalankan dan periksa:
+--   SELECT tablename, policyname, cmd, roles, qual FROM pg_policies
+--    WHERE schemaname = 'public' ORDER BY tablename, policyname;
 
 COMMIT;

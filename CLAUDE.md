@@ -21,14 +21,16 @@ Deployment is automated via GitHub Actions (`.github/workflows/deploy.yml`) on p
 - **Migrasi**: `supabase/migrations/0001_tenancy_rls.sql` (tenant, keanggotaan, RLS, kuota AI), `0002_ml_tenancy_rls.sql`. Perubahan skema berikutnya selalu sebagai file migrasi baru + test di `tests/rls.test.js`.
 - **Tenant baru**: undang user di Authentication, lalu `select admin_create_tenant('Nama', 'email', 'trial', now() + interval '30 days');`
 - **Seeding**: `node scripts/seed-supabase.mjs` dengan env `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SEED_TENANT_ID`.
-- **Edge Function**: `supabase/functions/ai-proxy/` — `handler.ts` (logika, diuji di Vitest) + `index.ts` (wiring Deno). Secrets: `GROQ_API_KEY`, `ALLOWED_ORIGINS`. Deploy: `npx supabase functions deploy ai-proxy`.
+- **Edge Function**: `supabase/functions/ai-proxy/` — `handler.ts` (logika, diuji di Vitest) + `index.ts` (wiring Deno). Secrets: `GROQ_API_KEY`, `ALLOWED_ORIGINS`. Fungsi kuota di database hanya untuk service role. Deploy: `npx supabase functions deploy ai-proxy`.
 - **Client**: `src/lib/supabase.js` — satu-satunya tempat URL dan anon key.
 
 ## Auth dan tenant
 
 - `src/auth/AuthContext.jsx` — status `demo | tenant | no_tenant | loading`. `useAuth()` memberi `tenant`, `role`, `canWrite`.
 - **Mode demo** (tanpa login): tidak boleh ada panggilan ke tabel Supabase. Data contoh statis + localStorage.
-- **Mode tenant**: `usePersistedState(..., { tenantId })` dan `useLHAData(tenantId)`. Subtree di-remount lewat `key` saat tenant berubah.
+- **Mode tenant**: `usePersistedState(..., { tenantId, canWrite })` (sinkron dengan cek versi, `src/hooks/documentSync.js`) dan `useLHAData()` (tenant dari sesi). Subtree di-remount lewat `key` saat tenant berubah.
+- Field di `LOCAL_ONLY_FIELDS` (`activeTab`, `aiConfig`) tidak pernah dikirim ke server. Kunci localStorage baru wajib lewat `scopedKey()` dari `src/lib/tenantScope.js`.
+- Tab analitik membaca `data.reports`; `withLegacyReports()` menyamakan bentuk data contoh dan data database.
 - Data tenant tidak pernah dihapus otomatis oleh kode klien.
 
 ## Architecture

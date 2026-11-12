@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Card, SectionHeader, Badge, StatCard, ExhibitHeader, ProgressBar, DonutChart, Divider, HeatCell } from "../components/ui";
-import { useLHAData } from "../hooks/useLHAData";
+import { useLHAData, hasLhaFindings } from "../hooks/useLHAData";
+import LhaEmptyState from "../components/LhaEmptyState";
 
 const RISK_COLORS = {
   operasional: "#D97706", strategis: "#2563EB", kepatuhan: "#DC2626",
@@ -18,7 +19,7 @@ export default function AnalyticsTab() {
   const { data, loading, error } = useLHAData();
 
   const stats = useMemo(() => {
-    if (!data) return null;
+    if (!hasLhaFindings(data)) return null;
     const reports = data.reports;
     const allFindings = reports.flatMap(r => r.findings);
     const allFraud = reports.flatMap(r => r.fraud_indicators);
@@ -66,7 +67,7 @@ export default function AnalyticsTab() {
 
   if (loading) return <div style={{ padding: 60, textAlign: "center", color: "#94A3B8", fontSize: 13, fontFamily: "'JetBrains Mono', monospace" }}>Loading analytics engine...</div>;
   if (error) return <div style={{ padding: 60, textAlign: "center", color: "#DC2626", fontSize: 13 }}>Failed: {error}</div>;
-  if (!stats) return null;
+  if (!stats) return <LhaEmptyState />;
 
   const { reports, allFindings, allFraud, riskDist, fraudHigh, fraudMed, fraudLow, fraudCat, rootCauses, totalPages, avgFindings, avgFraud } = stats;
   const maxRisk = Math.max(...Object.values(riskDist), 1);

@@ -7,14 +7,18 @@ export const MAX_BODY_BYTES = 100_000;
 export const MAX_TOKENS_CAP = 2_000;
 export const DEFAULT_MAX_TOKENS = 1_000;
 
-export type QuotaResult = { allowed: boolean; reason?: string; remaining?: number };
+export type QuotaResult = { allowed: boolean; reason?: string; remaining?: number; usage_id?: number };
 export type ModelResult = { ok: true; text: string } | { ok: false; status: number; detail?: string };
 
 export interface AiProxyDeps {
   allowedOrigins: string[];
   allowedModels?: string[];
-  getUser(authorization: string): Promise<{ id: string } | null>;
-  consumeQuota(authorization: string, model: string): Promise<QuotaResult>;
+  /** Memverifikasi access token user (bukan anon key) dan mengembalikan identitasnya. */
+  getUser(token: string): Promise<{ id: string } | null>;
+  /** Cek + catat kuota untuk user yang sudah terverifikasi. */
+  consumeQuota(userId: string, model: string): Promise<QuotaResult>;
+  /** Mengembalikan satu pemakaian ketika model gagal menjawab. */
+  refundQuota(userId: string, usageId: number): Promise<void>;
   callModel(input: { prompt: string; model: string; max_tokens: number }): Promise<ModelResult>;
   log?(event: string, detail: Record<string, unknown>): void;
 }
@@ -45,7 +49,7 @@ export function createAiProxyHandler(deps: AiProxyDeps) {
           "Access-Control-Allow-Headers": "Content-Type, Authorization, apikey, x-client-info",
           "Vary": "Origin",
         }
-      : {};
+      : { "Vary": "Origin" };
     const json = (status: number, body: unknown) =>
       new Response(JSON.stringify(body), { status, headers: { ...cors, "Content-Type": "application/json" } });
 
@@ -55,17 +59,20 @@ export function createAiProxyHandler(deps: AiProxyDeps) {
     if (req.method !== "POST") return json(405, { error: "Metode tidak didukung." });
 
     // 2. Autentikasi.
-    const authorization = req.headers.get("Authorization") ?? "";
-    if (!/^Bearer\s+\S+/i.test(authorization)) return json(401, { error: QUOTA_ERRORS.unauthenticated.error });
+    const token = /^Bearer\s+(\S+)$/i.exec(req.headers.get("Authorization") ?? "")?.[1];
+    if (!token) return json(401, { error: QUOTA_ERRORS.unauthenticated.error });
     let user: { id: string } | null = null;
     try {
-      user = await deps.getUser(authorization);
+      user = await deps.getUser(token);
     } catch (e) {
       log("auth_error", { message: String(e) });
     }
     if (!user) return json(401, { error: QUOTA_ERRORS.unauthenticated.error });
 
     // 3. Validasi body.
+    if (Number(req.headers.get("Content-Length") ?? 0) > MAX_BODY_BYTES) {
+      return json(413, { error: "Permintaan terlalu besar." });
+    }
     let raw: string;
     try {
       raw = await req.text();
@@ -101,7 +108,7 @@ export function createAiProxyHandler(deps: AiProxyDeps) {
     // 4. Kuota (cek + catat, di database).
     let quota: QuotaResult;
     try {
-      quota = await deps.consumeQuota(authorization, model);
+      quota = await deps.consumeQuota(user.id, model);
     } catch (e) {
       log("quota_error", { user: user.id, message: String(e) });
       return json(503, { error: "Layanan AI sedang tidak tersedia." });
@@ -111,16 +118,27 @@ export function createAiProxyHandler(deps: AiProxyDeps) {
       return json(mapped.status, { error: mapped.error, reason: quota.reason });
     }
 
-    // 5. Model. Detail galat upstream hanya ke log server.
+    // 5. Model. Detail galat upstream hanya ke log server. Kegagalan (termasuk
+    //    jawaban kosong) tidak memakan kuota: pemakaian yang tadi dicatat dikembalikan.
+    const refund = async () => {
+      if (quota.usage_id === undefined) return;
+      try {
+        await deps.refundQuota(user!.id, quota.usage_id);
+      } catch (e) {
+        log("refund_error", { user: user!.id, usage_id: quota.usage_id, message: String(e) });
+      }
+    };
     let result: ModelResult;
     try {
       result = await deps.callModel({ prompt, model, max_tokens });
     } catch (e) {
       log("model_exception", { user: user.id, message: String(e) });
+      await refund();
       return json(502, { error: "Layanan AI gagal merespons." });
     }
-    if (!result.ok) {
-      log("model_error", { user: user.id, status: result.status, detail: result.detail });
+    if (!result.ok || !result.text.trim()) {
+      log("model_error", { user: user.id, status: result.ok ? "empty" : result.status, detail: result.ok ? undefined : result.detail });
+      await refund();
       return json(502, { error: "Layanan AI gagal merespons." });
     }
     return json(200, { text: result.text, remaining: quota.remaining });

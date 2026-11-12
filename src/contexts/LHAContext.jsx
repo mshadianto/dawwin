@@ -6,6 +6,7 @@
 // ═══════════════════════════════════════════════════════
 
 import { createContext, useContext, useState, useMemo, useEffect } from "react";
+import { scopedKey } from "../lib/tenantScope";
 
 const LHAContext = createContext(null);
 
@@ -22,7 +23,7 @@ export function LHAProvider({ children, lhas = [] }) {
   // active LHA number (untuk single-LHA scope view)
   const [activeLhaNumber, setActiveLhaNumber] = useState(() => {
     try {
-      return localStorage.getItem(ACTIVE_LHA_STORAGE_KEY) || null;
+      return localStorage.getItem(scopedKey(ACTIVE_LHA_STORAGE_KEY)) || null;
     } catch {
       return null;
     }
@@ -31,7 +32,7 @@ export function LHAProvider({ children, lhas = [] }) {
   // scope mode: "all" (cross-LHA) atau "single" (filter ke 1 LHA)
   const [scopeMode, setScopeMode] = useState(() => {
     try {
-      return localStorage.getItem(SCOPE_STORAGE_KEY) || "all";
+      return localStorage.getItem(scopedKey(SCOPE_STORAGE_KEY)) || "all";
     } catch {
       return "all";
     }
@@ -40,14 +41,14 @@ export function LHAProvider({ children, lhas = [] }) {
   // Persist to localStorage
   useEffect(() => {
     try {
-      if (activeLhaNumber) localStorage.setItem(ACTIVE_LHA_STORAGE_KEY, activeLhaNumber);
-      else localStorage.removeItem(ACTIVE_LHA_STORAGE_KEY);
+      if (activeLhaNumber) localStorage.setItem(scopedKey(ACTIVE_LHA_STORAGE_KEY), activeLhaNumber);
+      else localStorage.removeItem(scopedKey(ACTIVE_LHA_STORAGE_KEY));
     } catch {}
   }, [activeLhaNumber]);
 
   useEffect(() => {
     try {
-      localStorage.setItem(SCOPE_STORAGE_KEY, scopeMode);
+      localStorage.setItem(scopedKey(SCOPE_STORAGE_KEY), scopeMode);
     } catch {}
   }, [scopeMode]);
 

@@ -3,7 +3,7 @@ CREATE ROLE anon NOLOGIN;
 CREATE ROLE authenticated NOLOGIN;
 CREATE ROLE service_role NOLOGIN BYPASSRLS;
 CREATE SCHEMA auth;
-CREATE TABLE auth.users (id UUID PRIMARY KEY, email TEXT UNIQUE);
+CREATE TABLE auth.users (id UUID PRIMARY KEY, email TEXT UNIQUE, email_confirmed_at TIMESTAMPTZ);
 CREATE FUNCTION auth.uid() RETURNS UUID LANGUAGE sql STABLE AS $$
   SELECT nullif(current_setting('request.jwt.claim.sub', true), '')::uuid
 $$;

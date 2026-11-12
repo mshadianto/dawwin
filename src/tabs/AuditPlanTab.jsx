@@ -6,6 +6,7 @@
 // ═══════════════════════════════════════════════════════
 
 import { useState, useMemo, useEffect } from "react";
+import { scopedKey } from "../lib/tenantScope";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   PieChart, Pie, Cell,
@@ -65,14 +66,14 @@ export default function AuditPlanTab() {
   // Load universe + concerns
   const [units] = useState(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
+      const saved = localStorage.getItem(scopedKey(STORAGE_KEY));
       return saved ? JSON.parse(saved) : DEFAULT_AUDITABLE_UNITS;
     } catch { return DEFAULT_AUDITABLE_UNITS; }
   });
 
   const [stakeholderConcerns] = useState(() => {
     try {
-      const saved = localStorage.getItem(STAKEHOLDER_KEY);
+      const saved = localStorage.getItem(scopedKey(STAKEHOLDER_KEY));
       return saved ? JSON.parse(saved) : {};
     } catch { return {}; }
   });
@@ -80,7 +81,7 @@ export default function AuditPlanTab() {
   // Plan config
   const [config, setConfig] = useState(() => {
     try {
-      const saved = localStorage.getItem(PLAN_CONFIG_KEY);
+      const saved = localStorage.getItem(scopedKey(PLAN_CONFIG_KEY));
       return saved ? JSON.parse(saved) : { capacityDays: 250, year: new Date().getFullYear() + 1 };
     } catch { return { capacityDays: 250, year: new Date().getFullYear() + 1 }; }
   });
@@ -89,7 +90,7 @@ export default function AuditPlanTab() {
 
   // Persist config
   useEffect(() => {
-    try { localStorage.setItem(PLAN_CONFIG_KEY, JSON.stringify(config)); } catch {}
+    try { localStorage.setItem(scopedKey(PLAN_CONFIG_KEY), JSON.stringify(config)); } catch {}
   }, [config]);
 
   // ── Generate plan ───────────────────────────

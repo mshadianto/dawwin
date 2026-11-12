@@ -8,8 +8,14 @@ const ALICE = "00000000-0000-0000-0000-0000000000a1"; // auditor, tenant A
 const VERA = "00000000-0000-0000-0000-0000000000a2"; // viewer, tenant A
 const BOB = "00000000-0000-0000-0000-0000000000b1"; // owner, tenant B
 const NOBODY = "00000000-0000-0000-0000-0000000000c1"; // logged in, no tenant
+const PENDING = "00000000-0000-0000-0000-0000000000d1"; // signed up, email not confirmed
 
 let db, tenantA, tenantB;
+
+async function asService(fn) {
+  await db.exec("RESET ROLE; SET ROLE service_role");
+  try { return await fn(); } finally { await db.exec("RESET ROLE"); }
+}
 
 async function as(userId, fn) {
   await db.exec("RESET ROLE");
@@ -30,12 +36,19 @@ beforeAll(async () => {
     INSERT INTO lha_reports (source_file, title) VALUES ('lama.pdf', 'Laporan lama');
     INSERT INTO lha_findings (report_id, title) SELECT id, 'Temuan lama' FROM lha_reports;
     INSERT INTO ml_workspaces (owner_id) VALUES ('anon');
+    -- Keadaan live yang tidak tercermin di file schema: policy buatan dashboard
+    -- dengan nama lain, dan constraint unik dengan nama lain.
+    CREATE POLICY "Enable all" ON audit_documents FOR ALL USING (true) WITH CHECK (true);
+    CREATE POLICY "Enable read access for all users" ON lha_findings FOR SELECT USING (true);
+    CREATE POLICY "public ml" ON ml_experiments FOR ALL USING (true) WITH CHECK (true);
+    ALTER TABLE audit_documents RENAME CONSTRAINT audit_documents_slug_key TO slug_unik_buatan_dashboard;
   `);
   await db.exec(sql("../supabase/migrations/0001_tenancy_rls.sql"));
   await db.exec(sql("../supabase/migrations/0002_ml_tenancy_rls.sql"));
 
-  await db.exec(`INSERT INTO auth.users (id, email) VALUES
-    ('${ALICE}','alice@a.test'), ('${VERA}','vera@a.test'), ('${BOB}','bob@b.test'), ('${NOBODY}','nobody@x.test')`);
+  await db.exec(`INSERT INTO auth.users (id, email, email_confirmed_at) VALUES
+    ('${ALICE}','alice@a.test', now()), ('${VERA}','vera@a.test', now()), ('${BOB}','bob@b.test', now()),
+    ('${NOBODY}','nobody@x.test', now()), ('${PENDING}','pending@x.test', NULL)`);
   tenantA = (await rows("SELECT admin_create_tenant('Klien A','alice@a.test','pro', now() + interval '30 days') AS id"))[0].id;
   tenantB = (await rows("SELECT admin_create_tenant('Klien B','bob@b.test','pro', now() + interval '30 days') AS id"))[0].id;
   await db.query("INSERT INTO tenant_members (tenant_id, user_id, role) VALUES ($1, $2, 'viewer')", [tenantA, VERA]);
@@ -89,11 +102,49 @@ describe("isolasi tenant", () => {
     expect(await as(BOB, () => rows("SELECT * FROM lha_findings"))).toEqual([]);
   });
 
-  it("viewer bisa membaca tetapi tidak bisa menulis", async () => {
+  it("viewer bisa membaca tetapi tidak bisa menulis atau menghapus", async () => {
     expect((await as(VERA, () => rows("SELECT * FROM audit_documents"))).length).toBe(1);
     await expect(as(VERA, () => db.query("INSERT INTO lha_reports (source_file) VALUES ('v.pdf')"))).rejects.toThrow(/row-level security/);
-    await as(VERA, () => db.exec("UPDATE audit_documents SET data = '{\"v\":1}'"));
+    await as(VERA, () => db.exec("UPDATE audit_documents SET data = '{\"v\":1}'; DELETE FROM audit_documents; DELETE FROM lha_reports"));
     expect(await as(ALICE, () => rows("SELECT data FROM audit_documents"))).toEqual([{ data: { a: 1 } }]);
+    expect((await as(ALICE, () => rows("SELECT * FROM lha_reports"))).length).toBe(1);
+  });
+
+  it("temuan tidak bisa dipindahkan ke laporan tenant lain", async () => {
+    await as(BOB, () => db.query("INSERT INTO lha_reports (source_file) VALUES ('b.pdf')"));
+    await as(BOB, () => db.exec("INSERT INTO lha_findings (report_id, title) SELECT id, 'milik B' FROM lha_reports"));
+    const [{ id: reportA }] = await rows("SELECT id FROM lha_reports WHERE source_file = 'a.pdf'");
+    await expect(as(BOB, () => db.query("UPDATE lha_findings SET report_id = $1", [reportA]))).rejects.toThrow(/foreign key/);
+  });
+
+  it("TRUNCATE (yang melewati RLS) tidak tersedia bagi user", async () => {
+    await expect(as(BOB, () => db.exec("TRUNCATE audit_documents"))).rejects.toThrow(/permission denied/);
+    await expect(as(BOB, () => db.exec("TRUNCATE ml_experiments CASCADE"))).rejects.toThrow(/permission denied/);
+  });
+
+  it("tulis dari salinan basi ditolak lewat nomor versi", async () => {
+    const [{ version }] = await as(ALICE, () => rows("SELECT version FROM audit_documents"));
+    const write = (data) => as(ALICE, () => rows(
+      "UPDATE audit_documents SET data = $1 WHERE slug = 'default' AND version = $2 RETURNING version", [data, version]));
+    expect(await write('{"a":2}')).toEqual([{ version: version + 1 }]); // penulis pertama menang
+    expect(await write('{"a":"basi"}')).toEqual([]);                    // penulis kedua, versi lama: 0 baris
+    expect(await as(ALICE, () => rows("SELECT data FROM audit_documents"))).toEqual([{ data: { a: 2 } }]);
+    await as(ALICE, () => db.exec("UPDATE audit_documents SET data = '{\"a\":1}'"));
+  });
+
+  it("tidak ada policy lama yang tersisa di tabel data", async () => {
+    const left = await rows(`SELECT tablename, policyname FROM pg_policies
+      WHERE schemaname = 'public' AND tablename NOT IN ('tenants','tenant_members','ai_usage')
+        AND policyname NOT IN ('tenant_select','tenant_insert','tenant_update','tenant_delete')`);
+    expect(left).toEqual([]);
+    const counts = await rows(`SELECT tablename, count(*)::int AS n FROM pg_policies
+      WHERE schemaname = 'public' AND tablename NOT IN ('tenants','tenant_members','ai_usage') GROUP BY 1`);
+    expect(counts.length).toBe(8);
+    for (const c of counts) expect(c.n, c.tablename).toBe(4);
+  });
+
+  it("email yang belum terkonfirmasi tidak bisa dijadikan owner tenant", async () => {
+    await expect(db.query("SELECT admin_create_tenant('Palsu','pending@x.test','pro', null)")).rejects.toThrow(/belum terkonfirmasi/);
   });
 
   it("user login tanpa tenant tidak melihat dan tidak bisa menulis apa pun", async () => {
@@ -118,10 +169,14 @@ describe("isolasi tenant", () => {
 });
 
 describe("kuota AI", () => {
-  const consume = (u) => as(u, async () => (await rows("SELECT consume_ai_quota('llama-3.3-70b-versatile') AS r"))[0].r);
+  const MODEL = "llama-3.3-70b-versatile";
+  const consume = (u) => asService(async () => (await rows("SELECT consume_ai_quota($1, $2) AS r", [u, MODEL]))[0].r);
 
-  it("anon tidak bisa memanggil consume_ai_quota", async () => {
-    await expect(consume(null)).rejects.toThrow(/permission denied/);
+  it("hanya service role yang bisa memanggil fungsi kuota", async () => {
+    for (const who of [null, ALICE, VERA]) {
+      await expect(as(who, () => db.query("SELECT consume_ai_quota($1, $2)", [ALICE, MODEL]))).rejects.toThrow(/permission denied/);
+      await expect(as(who, () => db.query("SELECT refund_ai_quota($1, 1)", [ALICE]))).rejects.toThrow(/permission denied/);
+    }
   });
 
   it("user tanpa tenant ditolak", async () => {
@@ -130,10 +185,19 @@ describe("kuota AI", () => {
 
   it("mencatat pemakaian dan menolak setelah kuota bulanan habis", async () => {
     await db.query("UPDATE tenants SET ai_monthly_quota = 2 WHERE id = $1", [tenantB]);
-    expect((await consume(BOB)).allowed).toBe(true);
-    expect((await consume(BOB)).allowed).toBe(true);
+    expect(await consume(BOB)).toMatchObject({ allowed: true, remaining: 1 });
+    expect(await consume(BOB)).toMatchObject({ allowed: true, remaining: 0 });
     expect(await consume(BOB)).toEqual({ allowed: false, reason: "quota_exceeded" });
     expect((await rows("SELECT count(*)::int AS n FROM ai_usage WHERE tenant_id = $1", [tenantB]))[0].n).toBe(2);
+  });
+
+  it("refund mengembalikan satu pemakaian, hanya untuk pemilik catatan itu", async () => {
+    const [{ id }] = await rows("SELECT id FROM ai_usage WHERE tenant_id = $1 ORDER BY id DESC LIMIT 1", [tenantB]);
+    const refund = (u) => asService(async () => (await rows("SELECT refund_ai_quota($1, $2) AS ok", [u, id]))[0].ok);
+    expect(await refund(ALICE)).toBe(false);
+    expect(await refund(BOB)).toBe(true);
+    expect(await refund(BOB)).toBe(false);
+    expect((await consume(BOB)).allowed).toBe(true);
   });
 
   it("kuota satu tenant tidak memengaruhi tenant lain", async () => {
@@ -153,7 +217,9 @@ describe("kuota AI", () => {
     expect(await consume(ALICE)).toEqual({ allowed: false, reason: "rate_limited" });
   });
 
-  it("anggota tidak bisa menghapus atau memalsukan catatan pemakaian", async () => {
+  it("anggota bisa melihat pemakaian tenantnya tetapi tidak bisa mengubahnya", async () => {
+    expect((await as(VERA, () => rows("SELECT * FROM ai_usage"))).length).toBe(10);
+    expect(await as(BOB, () => rows("SELECT * FROM ai_usage WHERE tenant_id = $1", [tenantA]))).toEqual([]);
     await expect(as(ALICE, () => db.exec("DELETE FROM ai_usage"))).rejects.toThrow(/permission denied/);
   });
 });

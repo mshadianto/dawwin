@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
+import { useAuth } from "../auth/AuthContext";
+import { withLegacyReports } from "../utils/lhaAdapter";
 
 const BASE = import.meta.env.BASE_URL || "/";
 
@@ -11,9 +13,10 @@ async function fetchFromSupabase() {
     supabase.from("lha_risk_profiles").select("*").order("created_at"),
   ]);
 
-  if (reportsRes.error) throw reportsRes.error;
+  for (const res of [reportsRes, findingsRes, fraudRes, riskRes]) {
+    if (res.error) throw new Error(res.error.message);
+  }
   const reports = reportsRes.data;
-  if (!reports.length) return null;
 
   const findings = findingsRes.data || [];
   const fraud = fraudRes.data || [];
@@ -64,34 +67,41 @@ async function fetchFromSupabase() {
   };
 }
 
+/** True bila ada minimal satu laporan dengan temuan; dasar tampilan kosong di tab analitik. */
+export function hasLhaFindings(data) {
+  return Boolean(data?.reports?.some(r => (r.findings || []).length > 0));
+}
+
 /**
- * Data LHA untuk analitik.
- * - Tanpa tenantId (mode demo): data contoh statis, tidak ada panggilan ke database.
- * - Dengan tenantId: laporan milik tenant (RLS); bila belum ada, tampilkan data contoh.
+ * Data LHA untuk analitik. Tenant diambil dari sesi, jadi setiap tab yang
+ * memanggil hook ini otomatis melihat data yang benar.
+ * - Mode demo: data contoh statis, tidak ada panggilan ke database.
+ * - Mode tenant: hanya laporan milik tenant (RLS). Tenant tanpa laporan melihat
+ *   keadaan kosong, dan galat ditampilkan sebagai galat; data contoh tidak
+ *   pernah disajikan seolah-olah milik klien.
  */
-export function useLHAData(tenantId = null) {
+export function useLHAData() {
+  const { tenant } = useAuth();
+  const tenantId = tenant?.id ?? null;
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
-    const loadFromJson = () => fetch(`${BASE}data/lha-parsed.json`)
-      .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
-      .then(d => { if (!cancelled) { setData(d); setLoading(false); } })
-      .catch(e2 => { if (!cancelled) { setError(e2.message); setLoading(false); } });
+    const done = (d, e = null) => { if (!cancelled) { setData(withLegacyReports(d)); setError(e); setLoading(false); } };
 
     setLoading(true);
     setError(null);
     if (!tenantId) {
-      loadFromJson();
+      fetch(`${BASE}data/lha-parsed.json`)
+        .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+        .then(d => done(d))
+        .catch(e => done(null, e.message));
     } else {
       fetchFromSupabase()
-        .then(d => {
-          if (cancelled) return;
-          if (d) { setData(d); setLoading(false); } else { return loadFromJson(); }
-        })
-        .catch(() => loadFromJson());
+        .then(d => done(d))
+        .catch(e => done(null, `Gagal memuat data LHA: ${e.message}`));
     }
     return () => { cancelled = true; };
   }, [tenantId]);
